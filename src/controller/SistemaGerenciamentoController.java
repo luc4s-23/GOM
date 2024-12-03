@@ -191,67 +191,78 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelCadastroCliente.add(btnCadastrarCliente);
 
 		JPanel painelCadastrarVeiculo = new JPanel();
+		painelCadastrarVeiculo.setBackground(new Color(0, 0, 0));
 		painelCadastrarVeiculo.setLayout(null);
 		painelPrincipal.add(painelCadastrarVeiculo, "PAINEL CADASTRO VEICULO");
 
 		JLabel lblInfoVeiculo_1 = new JLabel("Informações do Veículo");
+		lblInfoVeiculo_1.setForeground(new Color(255, 255, 255));
 		lblInfoVeiculo_1.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblInfoVeiculo_1.setBounds(281, 198, 241, 25);
 		painelCadastrarVeiculo.add(lblInfoVeiculo_1);
 
 		JComboBox comboBoxMarca_1 = new JComboBox();
-		comboBoxMarca_1.setBounds(212, 235, 357, 20);
+		comboBoxMarca_1.setBounds(212, 235, 357, 25);
 		painelCadastrarVeiculo.add(comboBoxMarca_1);
 
 		JLabel lblMarca_1 = new JLabel("Marca:");
+		lblMarca_1.setForeground(new Color(255, 255, 255));
 		lblMarca_1.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblMarca_1.setBounds(123, 237, 46, 14);
 		painelCadastrarVeiculo.add(lblMarca_1);
 
 		JLabel lblModelo_1 = new JLabel("Modelo:");
+		lblModelo_1.setForeground(new Color(255, 255, 255));
 		lblModelo_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblModelo_1.setBounds(123, 268, 79, 14);
+		lblModelo_1.setBounds(123, 280, 79, 14);
 		painelCadastrarVeiculo.add(lblModelo_1);
 
 		JComboBox comboBoxModelo_1 = new JComboBox();
-		comboBoxModelo_1.setBounds(212, 265, 357, 20);
+		comboBoxModelo_1.setBounds(212, 277, 357, 25);
 		painelCadastrarVeiculo.add(comboBoxModelo_1);
 
 		textField_Ano = new JTextField();
 		textField_Ano.setColumns(10);
-		textField_Ano.setBounds(212, 296, 357, 20);
+		textField_Ano.setBounds(212, 317, 357, 25);
 		painelCadastrarVeiculo.add(textField_Ano);
 
 		JLabel lblAno_1 = new JLabel("Ano:");
+		lblAno_1.setForeground(new Color(255, 255, 255));
 		lblAno_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblAno_1.setBounds(123, 299, 46, 14);
+		lblAno_1.setBounds(123, 320, 46, 14);
 		painelCadastrarVeiculo.add(lblAno_1);
 
 		JLabel lblMotor_1 = new JLabel("Motor:");
+		lblMotor_1.setForeground(new Color(255, 255, 255));
 		lblMotor_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblMotor_1.setBounds(123, 331, 46, 14);
+		lblMotor_1.setBounds(123, 360, 46, 14);
 		painelCadastrarVeiculo.add(lblMotor_1);
 
 		JComboBox comboBoxMotor_1 = new JComboBox();
-		comboBoxMotor_1.setBounds(212, 327, 357, 20);
+		comboBoxMotor_1.setBounds(212, 356, 357, 25);
 		painelCadastrarVeiculo.add(comboBoxMotor_1);
 
 		JLabel lblPlaca_1 = new JLabel("Placa:");
+		lblPlaca_1.setForeground(new Color(255, 255, 255));
 		lblPlaca_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblPlaca_1.setBounds(123, 362, 67, 14);
+		lblPlaca_1.setBounds(123, 399, 67, 14);
 		painelCadastrarVeiculo.add(lblPlaca_1);
 
 		textField_17 = new JTextField();
 		textField_17.setColumns(10);
-		textField_17.setBounds(212, 359, 357, 25);
+		textField_17.setBounds(212, 396, 357, 25);
 		painelCadastrarVeiculo.add(textField_17);
 
-		JButton btnCadastrarVeiculo = new JButton("Cadastrar");
+		JButton btnCadastrarVeiculo = new JButton("Cadastrar veículo");
+		btnCadastrarVeiculo.setForeground(new Color(255, 255, 255));
+		btnCadastrarVeiculo.setBackground(new Color(0, 0, 0));
 		btnCadastrarVeiculo.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnCadastrarVeiculo.setBounds(342, 462, 105, 25);
+		btnCadastrarVeiculo.setBounds(212, 450, 357, 25);
+		btnCadastrarVeiculo.setBorder(new LineBorder(Color.white));
 		painelCadastrarVeiculo.add(btnCadastrarVeiculo);
 
 		JLabel lblSelecCliente = new JLabel("Selecione o Cliente");
+		lblSelecCliente.setForeground(new Color(255, 255, 255));
 		lblSelecCliente.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblSelecCliente.setBounds(295, 78, 198, 25);
 		painelCadastrarVeiculo.add(lblSelecCliente);
@@ -351,35 +362,43 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelDevedores.add(btnNovaDivida);
 
 		JPanel painelCadastroOS = new JPanel();
+		painelCadastroOS.setBackground(new Color(0, 0, 0));
 		painelCadastroOS.setLayout(null);
 		painelPrincipal.add(painelCadastroOS, "PAINEL CADASTRO OS");
 
 		JLabel lblClienteOS_1 = new JLabel("Para qual Cliente?");
+		lblClienteOS_1.setForeground(new Color(255, 255, 255));
 		lblClienteOS_1.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblClienteOS_1.setBounds(54, 26, 199, 25);
 		painelCadastroOS.add(lblClienteOS_1);
 
 		JComboBox comboBoxClienteOS_1 = new JComboBox();
-		comboBoxClienteOS_1.setBounds(28, 62, 257, 20);
+		comboBoxClienteOS_1.setForeground(new Color(255, 255, 255));
+		comboBoxClienteOS_1.setBounds(28, 62, 317, 25);
 		painelCadastroOS.add(comboBoxClienteOS_1);
 
 		JLabel lblVeiculoOS_1 = new JLabel("Qual Veículo?");
+		lblVeiculoOS_1.setForeground(new Color(255, 255, 255));
 		lblVeiculoOS_1.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblVeiculoOS_1.setBounds(379, 26, 146, 25);
+		lblVeiculoOS_1.setBounds(509, 26, 146, 25);
 		painelCadastroOS.add(lblVeiculoOS_1);
 
 		JComboBox comboBoxVeiculoOS_1 = new JComboBox();
-		comboBoxVeiculoOS_1.setBounds(314, 62, 268, 20);
+		comboBoxVeiculoOS_1.setBounds(444, 62, 317, 25);
 		painelCadastroOS.add(comboBoxVeiculoOS_1);
 
 		JTabbedPane tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tabbedPane_1.setBounds(28, 115, 422, 377);
+		tabbedPane_1.setBounds(81, 128, 422, 377);
 		painelCadastroOS.add(tabbedPane_1);
 
 		TextArea textArea_1 = new TextArea();
-		textArea_1.setBounds(456, 140, 164, 352);
+		textArea_1.setBounds(509, 153, 164, 352);
 		painelCadastroOS.add(textArea_1);
+		
+		JButton btnNewButton = new JButton("Criar O.S");
+		btnNewButton.setBounds(294, 542, 221, 25);
+		painelCadastroOS.add(btnNewButton);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBorder(new LineBorder(Color.BLACK));
@@ -485,5 +504,8 @@ public class SistemaGerenciamentoController extends JFrame {
 		ImageIcon fav = new ImageIcon("img/favicon.png");
 		setIconImage(fav.getImage());
 
+	}
+	public static void main(String[] args) {
+		new SistemaGerenciamentoController();
 	}
 }
