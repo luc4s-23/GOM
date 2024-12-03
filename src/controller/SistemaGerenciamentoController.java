@@ -342,6 +342,11 @@ public class SistemaGerenciamentoController extends JFrame {
 		tableVeiculosCliente = new JTable();
 		tableVeiculosCliente.setBounds(62, 330, 521, 112);
 		painelConsultaCliente.add(tableVeiculosCliente);
+		
+		JButton btnSalvarAlteracoes = new JButton("Salvar Alterações");
+		btnSalvarAlteracoes.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnSalvarAlteracoes.setBounds(284, 453, 148, 23);
+		painelConsultaCliente.add(btnSalvarAlteracoes);
 
 		JPanel painelDevedores = new JPanel();
 		painelDevedores.setLayout(null);
