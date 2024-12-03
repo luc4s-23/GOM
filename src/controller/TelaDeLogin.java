@@ -49,7 +49,7 @@ public class TelaDeLogin extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int opcao = JOptionPane.showConfirmDialog(botaoSair.getParent(), "Deseja sair do sistema?",
-						"Sistema de Lanchonete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+						"Sistema de Gerenciamento de Oficina", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (opcao == JOptionPane.YES_OPTION) {
 					System.exit(0);
 				}
