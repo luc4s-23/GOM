@@ -342,6 +342,11 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelConsultaCliente.add(lblSelecCliente_1);
 
 		JComboBox comboBoxSelecCliente = new JComboBox();
+		comboBoxSelecCliente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cDAO.preencherComboBox(comboBoxSelecCliente);
+			}
+		});
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
 
