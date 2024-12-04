@@ -1,38 +1,35 @@
 package controller;
 
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
+import java.awt.Color;
 import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
-import javax.swing.JComboBox;
+import java.awt.TextArea;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.JList;
-import java.awt.Scrollbar;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JRadioButton;
-import java.awt.Choice;
-import java.awt.List;
-import java.awt.TextArea;
-import javax.swing.JCheckBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.BorderLayout;
-import java.awt.Color;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+
+import model.DAO.ClienteDAO;
 
 public class SistemaGerenciamentoController extends JFrame {
-	private JTextField textField_Nome;
-	private JTextField textField_Endereco;
-	private JTextField textField_CPF;
-	private JTextField textField_Email;
-	private JTextField textField_Telefone;
+	private JTextField textField_NomeCliente;
+	private JTextField textField_EnderecoCliente;
+	private JTextField textField_CPFCliente;
+	private JTextField textField_EmailCliente;
+	private JTextField textField_TelefoneCliente;
 	private JTextField textField_Ano;
 	private JTextField textField_Placa;
 	private JTextField textField_16;
@@ -45,6 +42,8 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTable tableVeiculosCliente;
 	private JTable tableDevedores;
 
+	private ClienteDAO cDAO;
+	
 	public SistemaGerenciamentoController() {
 		setTitle("Sistema de Gerenciamento de Oficinas");
 		getContentPane().setBackground(new Color(0, 0, 0));
@@ -72,30 +71,30 @@ public class SistemaGerenciamentoController extends JFrame {
 		labelInfoCliente.setBounds(279, 28, 241, 25);
 		painelCadastroCliente.add(labelInfoCliente);
 
-		textField_Nome = new JTextField();
-		textField_Nome.setColumns(10);
-		textField_Nome.setBounds(212, 65, 357, 25);
-		painelCadastroCliente.add(textField_Nome);
+		textField_NomeCliente = new JTextField();
+		textField_NomeCliente.setColumns(10);
+		textField_NomeCliente.setBounds(212, 65, 357, 25);
+		painelCadastroCliente.add(textField_NomeCliente);
 
-		textField_Endereco = new JTextField();
-		textField_Endereco.setColumns(10);
-		textField_Endereco.setBounds(212, 101, 357, 25);
-		painelCadastroCliente.add(textField_Endereco);
+		textField_EnderecoCliente = new JTextField();
+		textField_EnderecoCliente.setColumns(10);
+		textField_EnderecoCliente.setBounds(212, 101, 357, 25);
+		painelCadastroCliente.add(textField_EnderecoCliente);
 
-		textField_CPF = new JTextField();
-		textField_CPF.setColumns(10);
-		textField_CPF.setBounds(212, 137, 357, 25);
-		painelCadastroCliente.add(textField_CPF);
+		textField_CPFCliente = new JTextField();
+		textField_CPFCliente.setColumns(10);
+		textField_CPFCliente.setBounds(212, 137, 357, 25);
+		painelCadastroCliente.add(textField_CPFCliente);
 
-		textField_Email = new JTextField();
-		textField_Email.setColumns(10);
-		textField_Email.setBounds(212, 173, 357, 25);
-		painelCadastroCliente.add(textField_Email);
+		textField_EmailCliente = new JTextField();
+		textField_EmailCliente.setColumns(10);
+		textField_EmailCliente.setBounds(212, 173, 357, 25);
+		painelCadastroCliente.add(textField_EmailCliente);
 
-		textField_Telefone = new JTextField();
-		textField_Telefone.setColumns(10);
-		textField_Telefone.setBounds(212, 209, 357, 25);
-		painelCadastroCliente.add(textField_Telefone);
+		textField_TelefoneCliente = new JTextField();
+		textField_TelefoneCliente.setColumns(10);
+		textField_TelefoneCliente.setBounds(212, 209, 357, 25);
+		painelCadastroCliente.add(textField_TelefoneCliente);
 
 		JLabel lblNome = new JLabel("Nome:");
 		lblNome.setForeground(new Color(255, 255, 255));
@@ -191,6 +190,13 @@ public class SistemaGerenciamentoController extends JFrame {
 		btnCadastrarCliente.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnCadastrarCliente.setBounds(212, 501, 357, 25);
 		btnCadastrarCliente.setBorder(new LineBorder(Color.white));
+		btnCadastrarCliente.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(), textField_CPFCliente.getText(), textField_EmailCliente.getText(), textField_TelefoneCliente.getText());
+			}
+		});
 		painelCadastroCliente.add(btnCadastrarCliente);
 
 		JPanel painelCadastrarVeiculo = new JPanel();
@@ -353,6 +359,11 @@ public class SistemaGerenciamentoController extends JFrame {
 		tableVeiculosCliente = new JTable();
 		tableVeiculosCliente.setBounds(116, 360, 521, 112);
 		painelConsultaCliente.add(tableVeiculosCliente);
+		
+		JButton btnSalvarAlteracoes = new JButton("Salvar Alterações");
+		btnSalvarAlteracoes.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnSalvarAlteracoes.setBounds(284, 453, 148, 23);
+		painelConsultaCliente.add(btnSalvarAlteracoes);
 
 		JPanel painelDevedores = new JPanel();
 		painelDevedores.setLayout(null);
