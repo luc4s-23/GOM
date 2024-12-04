@@ -19,6 +19,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import model.DAO.UsuarioDAO;
+import util.Conexao;
+
 import java.awt.Font;
 
 public class TelaDeLogin extends JFrame {
@@ -63,22 +66,28 @@ public class TelaDeLogin extends JFrame {
 		botaoLogar.setBounds(67, 188, 214, 25);
 		botaoLogar.setBorder(new LineBorder(Color.WHITE));
 		botaoLogar.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        String login = textoLogin.getText();
+		        String senha = new String(passwordSenha.getPassword());
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String login = textoLogin.getText();
-				String senha = new String(passwordSenha.getPassword());
+		        Conexao conexao = new Conexao( "jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root", "101201");
 
-				if (login.equals("admin") && senha.equals("1234")) {
-					dispose();
-					new SistemaGerenciamentoController();
-				} else {
-					JOptionPane.showMessageDialog(botaoLogar, "Usuário ou senha inválidos.", "Erro de login",
-							JOptionPane.ERROR_MESSAGE);
-				}
+		        UsuarioDAO usuarioDAO = new UsuarioDAO(conexao);
 
-			}
+		        boolean autenticado = usuarioDAO.autenticar(login, senha);
+		        if (autenticado) {
+		            JOptionPane.showMessageDialog(botaoLogar, "Login realizado com sucesso!", "Bem-vindo",
+		                    JOptionPane.INFORMATION_MESSAGE);
+		            dispose(); 
+		            new SistemaGerenciamentoController(); 
+		        } else {
+		            JOptionPane.showMessageDialog(botaoLogar, "Usuário ou senha inválidos.", "Erro de login",
+		                    JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
 		});
+
 		painelBotao.setLayout(null);
 
 		GridBagConstraints gbc_botaoLogar = new GridBagConstraints();
@@ -142,7 +151,7 @@ class JPanelComImagem extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (backgroundImage != null) {
-			// Desenha a imagem no tamanho do painel
+			
 			g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 		}
 	}
