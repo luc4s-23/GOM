@@ -71,7 +71,11 @@ public class TelaDeLogin extends JFrame {
 		        String login = textoLogin.getText();
 		        String senha = new String(passwordSenha.getPassword());
 
+<<<<<<< HEAD
 		        Conexao conexao = new Conexao( "jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root", "alunolab");
+=======
+		        Conexao conexao = new Conexao( "jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root", "43961");
+>>>>>>> fc6d7a9103f1a9f05c11e5ded44218c1a8b73120
 
 		        UsuarioDAO usuarioDAO = new UsuarioDAO(conexao);
 
