@@ -16,10 +16,11 @@ import util.Conexao;
 
 public class ClienteDAO {
 
-	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone) {
+	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone, JComboBox combo) {
 		Cliente cliente = null;
 
-		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root", "43961");
+		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
+				"alunolab");
 		Connection con = conexao.obterConexao();
 
 		String sql = "INSERT INTO cliente (nomeCompleto_cliente, endereco_cliente, cpf_cliente, email_cliente, telefone_cliente) VALUES (?, ?, ?, ?, ?)";
@@ -43,6 +44,8 @@ public class ClienteDAO {
 
 			comando.close();
 			con.close();
+			
+			preencherComboBox(combo);
 
 		} catch (SQLException e) {
 			System.out.println("Erro ao inserir no Banco de Dados.");
@@ -147,27 +150,32 @@ public class ClienteDAO {
 	}
 
 	public static void preencherComboBox(JComboBox<String> comboBox) {
-		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom",
-				"com.mysql.cj.jdbc.Driver","root","alunolab");
+		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
+				"alunolab");
 		Connection con = conexao.obterConexao();
-		
+
 		String sql = "select nomeCompleto_cliente from cliente";
-		
+
 		try {
 			PreparedStatement comando = con.prepareStatement(sql);
-			
-			ResultSet rs = comando.executeQuery(sql);
-			
+
+			ResultSet rs = comando.executeQuery();
+
 			DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-			
+			model.removeAllElements();
+
 			while (rs.next()) {
 				model.addElement(rs.getString("nomeCompleto_cliente"));
-				
+
 			}
-			
+
 			comboBox.setModel(model);
+
+			rs.close();
+			comando.close();
+			con.close();
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println(e);
 		}
 	}
 }

@@ -43,7 +43,8 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTable tableDevedores;
 
 	private ClienteDAO cDAO;
-	
+	private JComboBox comboBoxSelecCliente;
+
 	public SistemaGerenciamentoController() {
 		setTitle("Sistema de Gerenciamento de Oficinas");
 		getContentPane().setBackground(new Color(0, 0, 0));
@@ -191,10 +192,12 @@ public class SistemaGerenciamentoController extends JFrame {
 		btnCadastrarCliente.setBounds(212, 501, 357, 25);
 		btnCadastrarCliente.setBorder(new LineBorder(Color.white));
 		btnCadastrarCliente.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(), textField_CPFCliente.getText(), textField_EmailCliente.getText(), textField_TelefoneCliente.getText());
+				cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(),
+						textField_CPFCliente.getText(), textField_EmailCliente.getText(),
+						textField_TelefoneCliente.getText(), comboBoxSelecCliente);
 			}
 		});
 		painelCadastroCliente.add(btnCadastrarCliente);
@@ -341,12 +344,8 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblSelecCliente_1.setBounds(288, 48, 198, 25);
 		painelConsultaCliente.add(lblSelecCliente_1);
 
-		JComboBox comboBoxSelecCliente = new JComboBox();
-		comboBoxSelecCliente.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cDAO.preencherComboBox(comboBoxSelecCliente);
-			}
-		});
+		comboBoxSelecCliente = new JComboBox();
+		cDAO.preencherComboBox(comboBoxSelecCliente);
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
 
@@ -364,7 +363,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		tableVeiculosCliente = new JTable();
 		tableVeiculosCliente.setBounds(116, 360, 521, 112);
 		painelConsultaCliente.add(tableVeiculosCliente);
-		
+
 		JButton btnSalvarAlteracoes = new JButton("Salvar Alterações");
 		btnSalvarAlteracoes.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnSalvarAlteracoes.setBounds(284, 453, 148, 23);
@@ -422,7 +421,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		TextArea textArea_1 = new TextArea();
 		textArea_1.setBounds(509, 153, 164, 352);
 		painelCadastroOS.add(textArea_1);
-		
+
 		JButton btnNewButton = new JButton("Criar O.S");
 		btnNewButton.setBounds(294, 542, 221, 25);
 		painelCadastroOS.add(btnNewButton);
@@ -532,6 +531,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		setIconImage(fav.getImage());
 
 	}
+
 	public static void main(String[] args) {
 		new SistemaGerenciamentoController();
 	}

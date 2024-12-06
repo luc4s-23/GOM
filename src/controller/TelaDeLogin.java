@@ -66,30 +66,27 @@ public class TelaDeLogin extends JFrame {
 		botaoLogar.setBounds(67, 188, 214, 25);
 		botaoLogar.setBorder(new LineBorder(Color.WHITE));
 		botaoLogar.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		        String login = textoLogin.getText();
-		        String senha = new String(passwordSenha.getPassword());
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String login = textoLogin.getText();
+				String senha = new String(passwordSenha.getPassword());
 
-<<<<<<< HEAD
-		        Conexao conexao = new Conexao( "jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root", "alunolab");
-=======
-		        Conexao conexao = new Conexao( "jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root", "43961");
->>>>>>> fc6d7a9103f1a9f05c11e5ded44218c1a8b73120
+				Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
+						"alunolab");
 
-		        UsuarioDAO usuarioDAO = new UsuarioDAO(conexao);
+				UsuarioDAO usuarioDAO = new UsuarioDAO(conexao);
 
-		        boolean autenticado = usuarioDAO.autenticar(login, senha);
-		        if (autenticado) {
-		            JOptionPane.showMessageDialog(botaoLogar, "Login realizado com sucesso!", "Bem-vindo",
-		                    JOptionPane.INFORMATION_MESSAGE);
-		            dispose(); 
-		            new SistemaGerenciamentoController(); 
-		        } else {
-		            JOptionPane.showMessageDialog(botaoLogar, "Usuário ou senha inválidos.", "Erro de login",
-		                    JOptionPane.ERROR_MESSAGE);
-		        }
-		    }
+				boolean autenticado = usuarioDAO.autenticar(login, senha);
+				if (autenticado) {
+					JOptionPane.showMessageDialog(botaoLogar, "Login realizado com sucesso!", "Bem-vindo",
+							JOptionPane.INFORMATION_MESSAGE);
+					dispose();
+					new SistemaGerenciamentoController();
+				} else {
+					JOptionPane.showMessageDialog(botaoLogar, "Usuário ou senha inválidos.", "Erro de login",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
 		});
 
 		painelBotao.setLayout(null);
@@ -155,7 +152,7 @@ class JPanelComImagem extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (backgroundImage != null) {
-			
+
 			g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 		}
 	}
