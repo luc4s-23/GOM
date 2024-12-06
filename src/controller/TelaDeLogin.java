@@ -78,8 +78,6 @@ public class TelaDeLogin extends JFrame {
 
 				boolean autenticado = usuarioDAO.autenticar(login, senha);
 				if (autenticado) {
-					JOptionPane.showMessageDialog(botaoLogar, "Login realizado com sucesso!", "Bem-vindo",
-							JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 					new SistemaGerenciamentoController();
 				} else {
