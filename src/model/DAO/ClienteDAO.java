@@ -16,7 +16,8 @@ import util.Conexao;
 
 public class ClienteDAO {
 
-	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone, JComboBox combo) {
+	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone,
+			JComboBox combo) {
 		Cliente cliente = null;
 
 		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
@@ -44,9 +45,6 @@ public class ClienteDAO {
 
 			comando.close();
 			con.close();
-			
-			preencherComboBox(combo);
-
 		} catch (SQLException e) {
 			System.out.println("Erro ao inserir no Banco de Dados.");
 			System.out.println("Verifique sua instrução SQL.");
@@ -88,6 +86,34 @@ public class ClienteDAO {
 		}
 
 		return clientes;
+	}
+
+	public static List<String> buscarNomesClientes() {
+		List<String> nomes = new LinkedList<String>();
+
+		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
+				"alunolab");
+		Connection con = conexao.obterConexao();
+
+		String sql = "select nomeCompleto_cliente from cliente";
+
+		try {
+			PreparedStatement comando = con.prepareStatement(sql);
+			ResultSet rs = comando.executeQuery();
+
+			while (rs.next()) {
+				nomes.add(rs.getString("nomeCompleto_cliente"));
+			}
+			rs.close();
+			comando.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Erro ao buscar no Banco de Dados.");
+			System.out.println("Verifique sua instrução SQL.");
+			System.out.println("Mensagem de erro: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return nomes;
 	}
 
 	public static boolean excluir(int id) {
@@ -149,33 +175,4 @@ public class ClienteDAO {
 		return ok;
 	}
 
-	public static void preencherComboBox(JComboBox<String> comboBox) {
-		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
-				"alunolab");
-		Connection con = conexao.obterConexao();
-
-		String sql = "select nomeCompleto_cliente from cliente";
-
-		try {
-			PreparedStatement comando = con.prepareStatement(sql);
-
-			ResultSet rs = comando.executeQuery();
-
-			DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-			model.removeAllElements();
-
-			while (rs.next()) {
-				model.addElement(rs.getString("nomeCompleto_cliente"));
-
-			}
-
-			comboBox.setModel(model);
-
-			rs.close();
-			comando.close();
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
 }

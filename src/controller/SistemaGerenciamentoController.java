@@ -1,4 +1,4 @@
-package controller;
+ package controller;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,6 +22,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import model.DAO.ClienteDAO;
 
@@ -34,11 +37,11 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textField_Placa;
 	private JTextField textField_16;
 	private JTextField textField_17;
-	private JTextField textField_18;
-	private JTextField textField_19;
-	private JTextField textField_20;
-	private JTextField textField_21;
-	private JTextField textField_22;
+	private JTextField textField_Endereco;
+	private JTextField textField_CPF;
+	private JTextField textField_emial;
+	private JTextField telefone;
+	private JTextField textField_divida;
 	private JTable tableVeiculosCliente;
 	private JTable tableDevedores;
 
@@ -300,10 +303,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblEndereco_1.setBounds(116, 165, 79, 14);
 		painelConsultaCliente.add(lblEndereco_1);
 
-		textField_18 = new JTextField();
-		textField_18.setColumns(10);
-		textField_18.setBounds(205, 162, 357, 25);
-		painelConsultaCliente.add(textField_18);
+		textField_Endereco = new JTextField();
+		textField_Endereco.setColumns(10);
+		textField_Endereco.setBounds(205, 162, 357, 25);
+		painelConsultaCliente.add(textField_Endereco);
 
 		JLabel lblCPF_1_1 = new JLabel("CPF:");
 		lblCPF_1_1.setForeground(new Color(255, 255, 255));
@@ -311,10 +314,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblCPF_1_1.setBounds(116, 201, 46, 14);
 		painelConsultaCliente.add(lblCPF_1_1);
 
-		textField_19 = new JTextField();
-		textField_19.setColumns(10);
-		textField_19.setBounds(205, 198, 357, 25);
-		painelConsultaCliente.add(textField_19);
+		textField_CPF = new JTextField();
+		textField_CPF.setColumns(10);
+		textField_CPF.setBounds(205, 198, 357, 25);
+		painelConsultaCliente.add(textField_CPF);
 
 		JLabel lblEmail_1_1 = new JLabel("Email:");
 		lblEmail_1_1.setForeground(new Color(255, 255, 255));
@@ -322,10 +325,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblEmail_1_1.setBounds(116, 237, 46, 14);
 		painelConsultaCliente.add(lblEmail_1_1);
 
-		textField_20 = new JTextField();
-		textField_20.setColumns(10);
-		textField_20.setBounds(205, 234, 357, 25);
-		painelConsultaCliente.add(textField_20);
+		textField_emial = new JTextField();
+		textField_emial.setColumns(10);
+		textField_emial.setBounds(205, 234, 357, 25);
+		painelConsultaCliente.add(textField_emial);
 
 		JLabel lblTelefone_1_1 = new JLabel("Telefone:");
 		lblTelefone_1_1.setForeground(new Color(255, 255, 255));
@@ -333,10 +336,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblTelefone_1_1.setBounds(116, 273, 67, 14);
 		painelConsultaCliente.add(lblTelefone_1_1);
 
-		textField_21 = new JTextField();
-		textField_21.setColumns(10);
-		textField_21.setBounds(205, 270, 357, 25);
-		painelConsultaCliente.add(textField_21);
+		telefone = new JTextField();
+		telefone.setColumns(10);
+		telefone.setBounds(205, 270, 357, 25);
+		painelConsultaCliente.add(telefone);
 
 		JLabel lblSelecCliente_1 = new JLabel("Selecione o Cliente");
 		lblSelecCliente_1.setForeground(new Color(255, 255, 255));
@@ -345,7 +348,33 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelConsultaCliente.add(lblSelecCliente_1);
 
 		comboBoxSelecCliente = new JComboBox();
-		cDAO.preencherComboBox(comboBoxSelecCliente);
+		comboBoxSelecCliente.addItem("Selecione o cliente");
+		comboBoxSelecCliente.setSelectedIndex(0);
+		comboBoxSelecCliente.addAncestorListener(new AncestorListener() {
+			
+			public void ancestorAdded(AncestorEvent event) {
+				List<String> lista = cDAO.buscarNomesClientes();
+
+				comboBoxSelecCliente.removeAll();
+
+				for (String c : lista) {
+					comboBoxSelecCliente.addItem(c);
+				}
+			}
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+
+		});
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
 
@@ -355,10 +384,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblDivida.setBounds(116, 310, 67, 14);
 		painelConsultaCliente.add(lblDivida);
 
-		textField_22 = new JTextField();
-		textField_22.setColumns(10);
-		textField_22.setBounds(205, 307, 91, 25);
-		painelConsultaCliente.add(textField_22);
+		textField_divida = new JTextField();
+		textField_divida.setColumns(10);
+		textField_divida.setBounds(205, 307, 91, 25);
+		painelConsultaCliente.add(textField_divida);
 
 		tableVeiculosCliente = new JTable();
 		tableVeiculosCliente.setBounds(116, 360, 521, 112);
