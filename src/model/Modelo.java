@@ -4,6 +4,11 @@ public class Modelo {
 	private int id_modelo;
 	private String nome_modelo;
 	private int id_fabricante;
+	
+	public Modelo(int id_modelo) {
+		super();
+		this.id_modelo = id_modelo;
+	}
 	public Modelo(int id_modelo, String nome_modelo, int fk_id_fabricante) {
 		super();
 		this.id_modelo = id_modelo;

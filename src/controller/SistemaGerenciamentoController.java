@@ -8,15 +8,14 @@ import java.awt.Font;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -26,10 +25,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
+import model.Cliente;
 import model.DAO.ClienteDAO;
+import model.DAO.FabricanteDAO;
+import model.DAO.ModeloDAO;
+import model.DAO.VeiculoDAO;
 
 public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textField_NomeCliente;
@@ -48,9 +49,15 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textField_divida;
 	private JTable tableVeiculosCliente;
 	private JTable tableDevedores;
-
-	private ClienteDAO cDAO;
 	private JComboBox comboBoxSelecCliente;
+	private JTextField textField_Motor;
+	
+	private ClienteDAO cDAO;
+	private VeiculoDAO vDAO;
+	private ModeloDAO mDAO;
+	private FabricanteDAO fDAO;
+	
+	
 
 	public SistemaGerenciamentoController() {
 		setTitle("Sistema de Gerenciamento de Oficinas");
@@ -136,10 +143,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelCadastroCliente.add(lblTelefone);
 		// CLIENTE
 
-		JLabel lblMarca = new JLabel("Marca:");
+		JLabel lblMarca = new JLabel("Fabricanta:");
 		lblMarca.setForeground(new Color(255, 255, 255));
 		lblMarca.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblMarca.setBounds(123, 310, 46, 14);
+		lblMarca.setBounds(123, 310, 79, 14);
 		painelCadastroCliente.add(lblMarca);
 
 		JLabel lblModelo = new JLabel("Modelo:");
@@ -182,17 +189,40 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblInfoVeiculo.setBounds(281, 271, 241, 25);
 		painelCadastroCliente.add(lblInfoVeiculo);
 
-		JComboBox comboBoxMarca = new JComboBox();
-		comboBoxMarca.setBounds(212, 308, 357, 25);
-		painelCadastroCliente.add(comboBoxMarca);
+		JComboBox comboBoxFabricante = new JComboBox();
+		fDAO.carregarComboBoxModelo(comboBoxFabricante);
+		comboBoxFabricante.setBounds(212, 308, 357, 25);
+		painelCadastroCliente.add(comboBoxFabricante);
 
 		JComboBox comboBoxModelo = new JComboBox();
+		comboBoxModelo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(
+                    JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                if (index == -1 && comboBoxModelo.getSelectedIndex() == -1) {
+                    setText("Selecione um modelo");
+                    setForeground(Color.GRAY);
+                }
+                return this;
+            }
+        });
+		comboBoxModelo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				{ if (comboBoxFabricante.getSelectedIndex() > 0) { 
+					String fabricanteNome = comboBoxFabricante.getSelectedItem().toString(); 
+					mDAO.carregarComboBoxModelo(comboBoxModelo, fabricanteNome); 
+					} else { 
+						comboBoxModelo.removeAllItems(); 
+						comboBoxModelo.addItem("Selecione um fabricante primeiro"); } }
+			}
+		});
 		comboBoxModelo.setBounds(212, 344, 357, 25);
 		painelCadastroCliente.add(comboBoxModelo);
-
-		JComboBox comboBoxMotor = new JComboBox();
-		comboBoxMotor.setBounds(212, 416, 357, 25);
-		painelCadastroCliente.add(comboBoxMotor);
 
 		JButton btnCadastrarCliente = new JButton("Cadastrar");
 		btnCadastrarCliente.setBackground(new Color(0, 0, 0));
@@ -204,7 +234,7 @@ public class SistemaGerenciamentoController extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(),
+				Cliente cliente = cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(),
 						textField_CPFCliente.getText(), textField_EmailCliente.getText(),
 						textField_TelefoneCliente.getText(), comboBoxSelecCliente);
 
@@ -212,6 +242,11 @@ public class SistemaGerenciamentoController extends JFrame {
 			}
 		});
 		painelCadastroCliente.add(btnCadastrarCliente);
+
+		textField_Motor = new JTextField();
+		textField_Motor.setBounds(212, 416, 357, 25);
+		painelCadastroCliente.add(textField_Motor);
+		textField_Motor.setColumns(10);
 
 		JPanel painelCadastrarVeiculo = new JPanel();
 		painelCadastrarVeiculo.setBackground(new Color(0, 0, 0));
@@ -356,29 +391,17 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelConsultaCliente.add(lblSelecCliente_1);
 
 		comboBoxSelecCliente = new JComboBox();
-		comboBoxSelecCliente.addItem("Selecione o cliente");
-		comboBoxSelecCliente.setSelectedIndex(0);
-		comboBoxSelecCliente.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Set<String> clientesUnicos = new LinkedHashSet<>(cDAO.buscarNomesClientes());
-				// Remover todos os itens exceto o primeiro
-				comboBoxSelecCliente.removeAllItems();
-				comboBoxSelecCliente.addItem("Selecione o cliente");
-				// Adicionar novos itens
-				for (String c : clientesUnicos) {
-					comboBoxSelecCliente.addItem(c);
-				}
-			}
-		});
+		cDAO.carregarComboBoxCliente(comboBoxSelecCliente);
+//		comboBoxSelecCliente.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				comboBoxSelecCliente.removeAllItems();
+//				
+//			}
+//		});
 
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
-		// Inicializar itens na primeira vez
-		Set<String> clientesUnicos = new LinkedHashSet<>(cDAO.buscarNomesClientes());
-		for (String c : clientesUnicos) {
-			comboBoxSelecCliente.addItem(c);
-		}
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
 

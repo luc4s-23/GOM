@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 import model.Cliente;
 import util.Conexao;
@@ -17,6 +18,7 @@ public class ClienteDAO {
 
 	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone,
 			JComboBox<String> combo) {
+
 		Cliente cliente = null;
 		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
@@ -37,10 +39,11 @@ public class ClienteDAO {
 				}
 				rs.close();
 			}
-			atualizarComboBox(combo, con);
-			conexao.fecharConexao(con);
+			carregarComboBoxCliente(combo);
+
 			comando.close();
 			con.close();
+			conexao.fecharConexao(con);
 		} catch (SQLException e) {
 			System.out.println("Erro ao inserir no Banco de Dados.");
 			System.out.println("Verifique sua instrução SQL.");
@@ -50,24 +53,35 @@ public class ClienteDAO {
 		return cliente;
 	}
 
-	public static void atualizarComboBox(JComboBox<String> combo, Connection con) {
-		combo.removeAllItems();
-		combo.addItem("Selecione o cliente");
-		String sql = "SELECT DISTINCT nomeCompleto_cliente FROM cliente";
+	public static JComboBox<String> carregarComboBoxCliente(JComboBox<String> comboCliente) {
+		comboCliente.removeAllItems();
+
+		Conexao conexao = Conexao.Conectar();
+		Connection con = conexao.obterConexao();
+		String sql = "select nomeCompleto_cliente from cliente";
+
 		try {
 			PreparedStatement comando = con.prepareStatement(sql);
 			ResultSet rs = comando.executeQuery();
+
 			while (rs.next()) {
-				combo.addItem(rs.getString("nomeCompleto_cliente"));
+				comboCliente.addItem(rs.getString("nomeCompleto_cliente"));
 			}
+
 			rs.close();
 			comando.close();
+			conexao.fecharConexao(con);
+
 		} catch (SQLException e) {
-			System.out.println("Erro ao buscar no Banco de Dados.");
+			System.out.println("Erro ao inserir no Banco de Dados.");
 			System.out.println("Verifique sua instrução SQL.");
 			System.out.println("Mensagem de erro: " + e.getMessage());
 			e.printStackTrace();
+
+			JOptionPane.showMessageDialog(null, "Ocorreu erro ao carregar a Combo Box", "Erro",
+					JOptionPane.ERROR_MESSAGE);
 		}
+		return comboCliente;
 	}
 
 	public static List<Cliente> buscarTodos() {
