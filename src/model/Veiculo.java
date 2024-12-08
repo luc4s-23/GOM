@@ -6,6 +6,11 @@ public class Veiculo {
 	private String motor;
 	private int id_cliente;
 	private int id_modelo;
+	
+	public Veiculo(int id_veiculo) {
+		super();
+		this.id_veiculo = id_veiculo;
+	}
 	public Veiculo(int id_veiculo, String placa, String motor, int id_cliente, int id_modelo) {
 		super();
 		this.id_veiculo = id_veiculo;

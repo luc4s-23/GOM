@@ -1,13 +1,16 @@
- package controller;
+package controller;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,6 +21,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -64,6 +68,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelVazio.setBackground(new Color(0, 0, 0));
 		painelPrincipal.add(painelVazio, "PAINEL VAZIO");
 
+		// CLIENTE
 		JPanel painelCadastroCliente = new JPanel();
 		painelCadastroCliente.setBackground(new Color(0, 0, 0));
 		painelCadastroCliente.setLayout(null);
@@ -129,6 +134,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblTelefone.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblTelefone.setBounds(123, 212, 67, 14);
 		painelCadastroCliente.add(lblTelefone);
+		// CLIENTE
 
 		JLabel lblMarca = new JLabel("Marca:");
 		lblMarca.setForeground(new Color(255, 255, 255));
@@ -201,6 +207,8 @@ public class SistemaGerenciamentoController extends JFrame {
 				cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(),
 						textField_CPFCliente.getText(), textField_EmailCliente.getText(),
 						textField_TelefoneCliente.getText(), comboBoxSelecCliente);
+
+				resetarCampos(painelCadastroCliente);
 			}
 		});
 		painelCadastroCliente.add(btnCadastrarCliente);
@@ -350,31 +358,27 @@ public class SistemaGerenciamentoController extends JFrame {
 		comboBoxSelecCliente = new JComboBox();
 		comboBoxSelecCliente.addItem("Selecione o cliente");
 		comboBoxSelecCliente.setSelectedIndex(0);
-		comboBoxSelecCliente.addAncestorListener(new AncestorListener() {
-			
-			public void ancestorAdded(AncestorEvent event) {
-				List<String> lista = cDAO.buscarNomesClientes();
-
-				comboBoxSelecCliente.removeAll();
-
-				for (String c : lista) {
+		comboBoxSelecCliente.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Set<String> clientesUnicos = new LinkedHashSet<>(cDAO.buscarNomesClientes());
+				// Remover todos os itens exceto o primeiro
+				comboBoxSelecCliente.removeAllItems();
+				comboBoxSelecCliente.addItem("Selecione o cliente");
+				// Adicionar novos itens
+				for (String c : clientesUnicos) {
 					comboBoxSelecCliente.addItem(c);
 				}
 			}
-
-			@Override
-			public void ancestorRemoved(AncestorEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void ancestorMoved(AncestorEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-
 		});
+
+		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
+		painelConsultaCliente.add(comboBoxSelecCliente);
+		// Inicializar itens na primeira vez
+		Set<String> clientesUnicos = new LinkedHashSet<>(cDAO.buscarNomesClientes());
+		for (String c : clientesUnicos) {
+			comboBoxSelecCliente.addItem(c);
+		}
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
 
@@ -559,6 +563,17 @@ public class SistemaGerenciamentoController extends JFrame {
 		ImageIcon fav = new ImageIcon("img/favicon.png");
 		setIconImage(fav.getImage());
 
+	}
+
+	private void resetarCampos(JPanel painel) {
+		for (Component comp : painel.getComponents()) {
+			if (comp instanceof JTextField) {
+				((JTextField) comp).setText(""); // Limpa o texto dos JTextFields
+			} else if (comp instanceof JPasswordField) {
+				((JPasswordField) comp).setText(""); // Limpa o JPasswordField, se houver
+			}
+			// Adicione mais tipos de componentes conforme necessário
+		}
 	}
 
 	public static void main(String[] args) {

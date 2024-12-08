@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 import model.Cliente;
@@ -17,15 +16,11 @@ import util.Conexao;
 public class ClienteDAO {
 
 	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone,
-			JComboBox combo) {
+			JComboBox<String> combo) {
 		Cliente cliente = null;
-
-		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
-				"alunolab");
+		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
-
 		String sql = "INSERT INTO cliente (nomeCompleto_cliente, endereco_cliente, cpf_cliente, email_cliente, telefone_cliente) VALUES (?, ?, ?, ?, ?)";
-
 		try {
 			PreparedStatement comando = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			comando.setString(1, nome);
@@ -42,7 +37,8 @@ public class ClienteDAO {
 				}
 				rs.close();
 			}
-
+			atualizarComboBox(combo, con);
+			conexao.fecharConexao(con);
 			comando.close();
 			con.close();
 		} catch (SQLException e) {
@@ -54,11 +50,30 @@ public class ClienteDAO {
 		return cliente;
 	}
 
+	public static void atualizarComboBox(JComboBox<String> combo, Connection con) {
+		combo.removeAllItems();
+		combo.addItem("Selecione o cliente");
+		String sql = "SELECT DISTINCT nomeCompleto_cliente FROM cliente";
+		try {
+			PreparedStatement comando = con.prepareStatement(sql);
+			ResultSet rs = comando.executeQuery();
+			while (rs.next()) {
+				combo.addItem(rs.getString("nomeCompleto_cliente"));
+			}
+			rs.close();
+			comando.close();
+		} catch (SQLException e) {
+			System.out.println("Erro ao buscar no Banco de Dados.");
+			System.out.println("Verifique sua instrução SQL.");
+			System.out.println("Mensagem de erro: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public static List<Cliente> buscarTodos() {
 		List<Cliente> clientes = new LinkedList<>();
 
-		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
-				"alunolab");
+		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
 
 		String sql = "SELECT * FROM cliente";
@@ -75,6 +90,7 @@ public class ClienteDAO {
 			}
 
 			rs.close();
+			conexao.fecharConexao(con);
 			comando.close();
 			con.close();
 
@@ -91,11 +107,10 @@ public class ClienteDAO {
 	public static List<String> buscarNomesClientes() {
 		List<String> nomes = new LinkedList<String>();
 
-		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
-				"alunolab");
+		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
 
-		String sql = "select nomeCompleto_cliente from cliente";
+		String sql = "select DISTINCT nomeCompleto_cliente from cliente";
 
 		try {
 			PreparedStatement comando = con.prepareStatement(sql);
@@ -105,6 +120,7 @@ public class ClienteDAO {
 				nomes.add(rs.getString("nomeCompleto_cliente"));
 			}
 			rs.close();
+			conexao.fecharConexao(con);
 			comando.close();
 			con.close();
 		} catch (SQLException e) {
@@ -119,8 +135,7 @@ public class ClienteDAO {
 	public static boolean excluir(int id) {
 		boolean ok = false;
 
-		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
-				"alunolab");
+		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
 
 		String sql = "DELETE FROM cliente WHERE id_cliente = ?";
@@ -131,6 +146,7 @@ public class ClienteDAO {
 
 			ok = comando.executeUpdate() > 0;
 
+			conexao.fecharConexao(con);
 			comando.close();
 			con.close();
 
@@ -146,8 +162,7 @@ public class ClienteDAO {
 	public static boolean atualizar(int id, String nome, String endereco, String cpf, String email, String telefone) {
 		boolean ok = false;
 
-		Conexao conexao = new Conexao("jdbc:mysql://localhost:3306/gom", "com.mysql.cj.jdbc.Driver", "root",
-				"alunolab");
+		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
 
 		String sql = "UPDATE cliente SET nome_cliente = ?, endereco_cliente = ?, cpf_cliente = ?, email_cliente = ?, telefone_cliente = ? WHERE id_cliente = ?";

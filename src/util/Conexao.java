@@ -3,14 +3,15 @@ package util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import util.Configurador;
 
 public class Conexao {
 	private String url;
 	private String driver;
 	private String login;
 	private String senha;
-	
-	public Conexao(String url, String driver, String login, String senha) {
+
+	private Conexao(String url, String driver, String login, String senha) {
 		super();
 		this.url = url;
 		this.driver = driver;
@@ -18,25 +19,38 @@ public class Conexao {
 		this.senha = senha;
 		try {
 			Class.forName(driver);
-		}catch(ClassNotFoundException e) {
+		} catch (ClassNotFoundException e) {
 			System.out.println("Erro ao carregar o Driver. Classe não encontrada.");
-			System.out.println("Mensagem: "+e.getMessage());
+			System.out.println("Mensagem: " + e.getMessage());
 		}
 	}
 	
-	public Connection obterConexao() {
-		Connection con = null;
-		
-		try {
-			con = DriverManager.getConnection(url,login,senha);
-		}catch(SQLException e) {
-			System.out.println("Erro ao acessar o Banco de Dados.");
-			System.out.println("Verifique os parâmetros de conexão.");
-			System.out.println("Mensagem: "+e.getMessage());
-		}
-		
-		return con;
+	public static Conexao Conectar() {
+		Configurador cf = new Configurador();
+		return new Conexao(cf.getUrl(), cf.getDriver(), cf.getLogin(), cf.getSenha());
 	}
+
+	public Connection obterConexao() {
+		try {
+			Class.forName(driver);
+			return DriverManager.getConnection(url, login, senha);
+		} catch (SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void fecharConexao(Connection con) {
+		try {
+			if (con != null) {
+				con.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 
 	public String getUrl() {
 		return url;
@@ -53,9 +67,5 @@ public class Conexao {
 	public String getSenha() {
 		return senha;
 	}
-	
-	
-	
-	
-	
+
 }
