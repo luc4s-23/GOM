@@ -8,18 +8,20 @@ import java.sql.SQLException;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
+import model.Fabricante;
+import model.Modelo;
 import util.Conexao;
 
 public class FabricanteDAO {
 
-	public static JComboBox<String> carregarComboBoxModelo(JComboBox<String> comboFabricante) {
+	public static JComboBox<Fabricante> carregarComboBoxFabricante(JComboBox<Fabricante> comboFabricante) {
 		// Limpar todos os itens do combo box antes de adicionar novos
 		comboFabricante.removeAllItems();
 
 		// Estabelecendo a conexão com o banco de dados
 		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
-		String sql = "select nome from fabricante";
+		String sql = "select * from fabricante order by nome";
 
 		try {
 			PreparedStatement comando = con.prepareStatement(sql);
@@ -27,7 +29,10 @@ public class FabricanteDAO {
 
 			// Adicionando os clientes ao JComboBox
 			while (rs.next()) {
-				comboFabricante.addItem(rs.getString("nome"));
+				Fabricante fabricante = new Fabricante();
+				fabricante.setId_fabricante(rs.getInt("id_fabricante"));
+				fabricante.setNome_fabricante(rs.getString("nome"));
+				comboFabricante.addItem(fabricante);
 			}
 
 			// Fechando recursos
@@ -47,4 +52,6 @@ public class FabricanteDAO {
 		}
 		return comboFabricante;
 	}
+	
+	
 }

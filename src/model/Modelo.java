@@ -5,6 +5,10 @@ public class Modelo {
 	private String nome_modelo;
 	private int id_fabricante;
 	
+	public Modelo() {
+		
+	}
+	
 	public Modelo(int id_modelo) {
 		super();
 		this.id_modelo = id_modelo;
@@ -34,5 +38,12 @@ public class Modelo {
 	public void setFk_id_fabricante(int fk_id_fabricante) {
 		this.id_fabricante = fk_id_fabricante;
 	}
+
+	@Override
+	public String toString() {
+		return nome_modelo;
+	}
+	
+	
 	
 }

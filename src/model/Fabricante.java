@@ -10,6 +10,10 @@ public class Fabricante {
 		this.nome_fabricante = nome_fabricante;
 	}
 	
+	public Fabricante() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getId_fabricante() {
 		return id_fabricante;
 	}
@@ -22,6 +26,12 @@ public class Fabricante {
 	public void setNome_fabricante(String nome_fabricante) {
 		this.nome_fabricante = nome_fabricante;
 	}
+
+	@Override
+	public String toString() {
+		return nome_fabricante;
+	}
+	
 	
 	
 }

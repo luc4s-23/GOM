@@ -9,13 +9,11 @@ import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -27,6 +25,8 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import model.Cliente;
+import model.Fabricante;
+import model.Modelo;
 import model.DAO.ClienteDAO;
 import model.DAO.FabricanteDAO;
 import model.DAO.ModeloDAO;
@@ -51,13 +51,11 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTable tableDevedores;
 	private JComboBox comboBoxSelecCliente;
 	private JTextField textField_Motor;
-	
+
 	private ClienteDAO cDAO;
 	private VeiculoDAO vDAO;
 	private ModeloDAO mDAO;
 	private FabricanteDAO fDAO;
-	
-	
 
 	public SistemaGerenciamentoController() {
 		setTitle("Sistema de Gerenciamento de Oficinas");
@@ -190,39 +188,22 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelCadastroCliente.add(lblInfoVeiculo);
 
 		JComboBox comboBoxFabricante = new JComboBox();
-		fDAO.carregarComboBoxModelo(comboBoxFabricante);
-		comboBoxFabricante.setBounds(212, 308, 357, 25);
-		painelCadastroCliente.add(comboBoxFabricante);
+		fDAO.carregarComboBoxFabricante(comboBoxFabricante);
 
 		JComboBox comboBoxModelo = new JComboBox();
-		comboBoxModelo.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(
-                    JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-                if (index == -1 && comboBoxModelo.getSelectedIndex() == -1) {
-                    setText("Selecione um modelo");
-                    setForeground(Color.GRAY);
-                }
-                return this;
-            }
-        });
-		comboBoxModelo.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				{ if (comboBoxFabricante.getSelectedIndex() > 0) { 
-					String fabricanteNome = comboBoxFabricante.getSelectedItem().toString(); 
-					mDAO.carregarComboBoxModelo(comboBoxModelo, fabricanteNome); 
-					} else { 
-						comboBoxModelo.removeAllItems(); 
-						comboBoxModelo.addItem("Selecione um fabricante primeiro"); } }
-			}
-		});
 		comboBoxModelo.setBounds(212, 344, 357, 25);
 		painelCadastroCliente.add(comboBoxModelo);
+
+		comboBoxFabricante.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Fabricante fabricante = (Fabricante) comboBoxFabricante.getSelectedItem();
+				ModeloDAO.carregarModelo(comboBoxModelo, fabricante.getId_fabricante());
+			}
+		});
+		comboBoxFabricante.setBounds(212, 308, 357, 25);
+		painelCadastroCliente.add(comboBoxFabricante);
 
 		JButton btnCadastrarCliente = new JButton("Cadastrar");
 		btnCadastrarCliente.setBackground(new Color(0, 0, 0));
@@ -422,7 +403,7 @@ public class SistemaGerenciamentoController extends JFrame {
 
 		JButton btnSalvarAlteracoes = new JButton("Salvar Alterações");
 		btnSalvarAlteracoes.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnSalvarAlteracoes.setBounds(284, 453, 148, 23);
+		btnSalvarAlteracoes.setBounds(291, 487, 148, 23);
 		painelConsultaCliente.add(btnSalvarAlteracoes);
 
 		JPanel painelDevedores = new JPanel();
@@ -479,6 +460,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelCadastroOS.add(textArea_1);
 
 		JButton btnNewButton = new JButton("Criar O.S");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnNewButton.setBounds(294, 542, 221, 25);
 		painelCadastroOS.add(btnNewButton);
 
