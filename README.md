@@ -1,22 +1,22 @@
 QUERRY PARA MYSQL:
 Part - 1
 
-INSERT INTO fabricantes (nome, pais_origem)
+INSERT INTO fabricante (nome)
 VALUES 
-    ('Volkswagen', 'Alemanha'),
-    ('Fiat', 'Itália'),
-    ('Chevrolet', 'Estados Unidos'),
-    ('Toyota', 'Japão'),
-    ('Hyundai', 'Coreia do Sul'),
-    ('Honda', 'Japão'),
-    ('Ford', 'Estados Unidos'),
-    ('Renault', 'França'),
-    ('Nissan', 'Japão'),
-    ('Jeep', 'Estados Unidos');
+    ('Volkswagen'),
+    ('Fiat'),
+    ('Chevrolet'),
+    ('Toyota'),
+    ('Hyundai'),
+    ('Honda'),
+    ('Ford'),
+    ('Renault'),
+    ('Nissan'),
+    ('Jeep');
     
 Part -2
 
-INSERT INTO modelos (nome, fk_id_fabricante)
+INSERT INTO modelo (nome, fk_id_fabricante)
 VALUES 
     -- Modelos da Volkswagen
     ('Gol', 1),
