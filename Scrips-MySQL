@@ -1,0 +1,1 @@
+INSERT INTO fabricante (nome) VALUES ('Volkswagen'), ('Fiat'), ('Chevrolet'), ('Toyota'), ('Hyundai'), ('Honda'), ('Ford'), ('Renault'), ('Nissan'), ('Jeep');
