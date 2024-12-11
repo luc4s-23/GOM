@@ -2,7 +2,7 @@ package model;
 
 public class Modelo {
 	private int id_modelo;
-	private static String nome_modelo;
+	private String nome_modelo;
 	private int id_fabricante;
 
 	public Modelo() {
@@ -46,10 +46,6 @@ public class Modelo {
 		this.id_fabricante = fk_id_fabricante;
 	}
 
-	public static String toDetalhesString() {
-		return "Modelo: " + nome_modelo;
-
-	}
 
 	@Override
 	public String toString() {

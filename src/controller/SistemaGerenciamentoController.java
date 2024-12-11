@@ -190,10 +190,11 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblInfoVeiculo.setBounds(281, 271, 241, 25);
 		painelCadastroCliente.add(lblInfoVeiculo);
 
-		JComboBox comboBoxFabricante = new JComboBox();
+		JComboBox<Fabricante> comboBoxFabricante = new JComboBox<Fabricante>();
 		fDAO.carregarComboBoxFabricante(comboBoxFabricante);
-
-		JComboBox comboBoxModelo = new JComboBox();
+		
+		
+		JComboBox<Modelo> comboBoxModelo = new JComboBox<Modelo>();
 		comboBoxModelo.setBounds(212, 344, 357, 25);
 		painelCadastroCliente.add(comboBoxModelo);
 
@@ -202,7 +203,9 @@ public class SistemaGerenciamentoController extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Fabricante fabricante = (Fabricante) comboBoxFabricante.getSelectedItem();
+				System.out.println(fabricante.getNome_fabricante()+" - "+fabricante.getId_fabricante());
 				ModeloDAO.carregarModelo(comboBoxModelo, fabricante.getId_fabricante());
+				
 			}
 		});
 		comboBoxFabricante.setBounds(212, 308, 357, 25);
