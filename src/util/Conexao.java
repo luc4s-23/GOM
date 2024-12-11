@@ -40,18 +40,6 @@ public class Conexao {
 		}
 	}
 
-	public void fecharConexao(Connection con) {
-		try {
-			if (con != null) {
-				con.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
-
 	public String getUrl() {
 		return url;
 	}

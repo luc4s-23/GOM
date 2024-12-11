@@ -27,6 +27,7 @@ import javax.swing.border.LineBorder;
 import model.Cliente;
 import model.Fabricante;
 import model.Modelo;
+import model.Veiculo;
 import model.DAO.ClienteDAO;
 import model.DAO.FabricanteDAO;
 import model.DAO.ModeloDAO;
@@ -40,7 +41,6 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textField_TelefoneCliente;
 	private JTextField textField_Ano;
 	private JTextField textField_Placa;
-	private JTextField textField_16;
 	private JTextField textField_17;
 	private JTextField textField_Endereco;
 	private JTextField textField_CPF;
@@ -58,6 +58,9 @@ public class SistemaGerenciamentoController extends JFrame {
 	private FabricanteDAO fDAO;
 
 	public SistemaGerenciamentoController() {
+		this.cDAO = new ClienteDAO();
+		this.vDAO = new VeiculoDAO();
+		
 		setTitle("Sistema de Gerenciamento de Oficinas");
 		getContentPane().setBackground(new Color(0, 0, 0));
 		setForeground(new Color(255, 255, 255));
@@ -207,18 +210,32 @@ public class SistemaGerenciamentoController extends JFrame {
 
 		JButton btnCadastrarCliente = new JButton("Cadastrar");
 		btnCadastrarCliente.setBackground(new Color(0, 0, 0));
-		btnCadastrarCliente.setForeground(new Color(255, 255, 255));
+		btnCadastrarCliente.setForeground(new Color(255, 255, 255));   
 		btnCadastrarCliente.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnCadastrarCliente.setBounds(212, 501, 357, 25);
-		btnCadastrarCliente.setBorder(new LineBorder(Color.white));
+		btnCadastrarCliente.setBorder(new LineBorder(new Color(255, 255, 255)));
 		btnCadastrarCliente.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Cliente cliente = cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(),
-						textField_CPFCliente.getText(), textField_EmailCliente.getText(),
-						textField_TelefoneCliente.getText(), comboBoxSelecCliente);
-
+				Cliente cliente = cDAO.inserir(
+						textField_NomeCliente.getText(), 
+						textField_EnderecoCliente.getText(),
+						textField_CPFCliente.getText(), 
+						textField_EmailCliente.getText(),
+						textField_TelefoneCliente.getText(),
+						comboBoxSelecCliente
+						);
+				
+				Modelo modelo = (Modelo) comboBoxModelo.getSelectedItem();
+				if(vDAO != null) {
+					Veiculo veiculo = vDAO.inserirVeiculo(
+							textField_Placa.getText(), 
+							textField_Motor.getText(), 
+							cliente.getId_cliente(),
+							modelo.getId_modelo());
+				}
+				
 				resetarCampos(painelCadastroCliente);
 			}
 		});
@@ -373,14 +390,6 @@ public class SistemaGerenciamentoController extends JFrame {
 
 		comboBoxSelecCliente = new JComboBox();
 		cDAO.carregarComboBoxCliente(comboBoxSelecCliente);
-//		comboBoxSelecCliente.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				comboBoxSelecCliente.removeAllItems();
-//				
-//			}
-//		});
-
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
@@ -403,25 +412,30 @@ public class SistemaGerenciamentoController extends JFrame {
 
 		JButton btnSalvarAlteracoes = new JButton("Salvar Alterações");
 		btnSalvarAlteracoes.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnSalvarAlteracoes.setBounds(291, 487, 148, 23);
+		btnSalvarAlteracoes.setBounds(205, 493, 357, 25);
 		painelConsultaCliente.add(btnSalvarAlteracoes);
 
 		JPanel painelDevedores = new JPanel();
+		painelDevedores.setBackground(new Color(0, 0, 0));
 		painelDevedores.setLayout(null);
 		painelPrincipal.add(painelDevedores, "PAINEL DEVEDORES");
 
 		tableDevedores = new JTable();
-		tableDevedores.setBounds(26, 105, 587, 326);
+		tableDevedores.setBounds(95, 102, 587, 326);
 		painelDevedores.add(tableDevedores);
 
 		JLabel lblDevedores = new JLabel("Lista de Devedores");
+		lblDevedores.setForeground(new Color(255, 255, 255));
 		lblDevedores.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblDevedores.setBounds(218, 41, 198, 25);
+		lblDevedores.setBounds(294, 52, 198, 25);
 		painelDevedores.add(lblDevedores);
 
 		JButton btnNovaDivida = new JButton("Nova Dívida");
-		btnNovaDivida.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnNovaDivida.setBounds(46, 56, 109, 23);
+		btnNovaDivida.setForeground(new Color(255, 255, 255));
+		btnNovaDivida.setBorder(new LineBorder(new Color(255, 255, 255)));
+		btnNovaDivida.setBackground(new Color(0, 0, 0));
+		btnNovaDivida.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnNovaDivida.setBounds(95, 52, 157, 25);
 		painelDevedores.add(btnNovaDivida);
 
 		JPanel painelCadastroOS = new JPanel();
@@ -466,6 +480,15 @@ public class SistemaGerenciamentoController extends JFrame {
 		});
 		btnNewButton.setBounds(294, 542, 221, 25);
 		painelCadastroOS.add(btnNewButton);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(0, 0, 0));
+		getContentPane().add(panel, BorderLayout.SOUTH);
+		
+		JLabel lblNewLabel = new JLabel("Copyright©2024, Gerenciamento Oficina Mecânica. Todos os direitos reservados.");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setForeground(new Color(255, 255, 255));
+		panel.add(lblNewLabel);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBorder(new LineBorder(Color.BLACK));
@@ -563,7 +586,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		});
 		menuDevedores.add(menuItemDevedores);
 
-		setSize(800, 700);
+		setSize(800, 723);
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setResizable(false);

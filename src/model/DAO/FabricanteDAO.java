@@ -38,7 +38,6 @@ public class FabricanteDAO {
 			// Fechando recursos
 			rs.close();
 			comando.close();
-			conexao.fecharConexao(con);
 
 		} catch (SQLException e) {
 			System.out.println("Erro ao inserir no Banco de Dados.");

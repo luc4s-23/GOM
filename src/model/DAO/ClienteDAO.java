@@ -17,7 +17,7 @@ import util.Conexao;
 public class ClienteDAO {
 
 	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone,
-			JComboBox<String> combo) {
+			JComboBox<String> comboCliente) {
 
 		Cliente cliente = null;
 		Conexao conexao = Conexao.Conectar();
@@ -38,12 +38,11 @@ public class ClienteDAO {
 					cliente = new Cliente(id, nome, endereco, cpf, email, telefone);
 				}
 				rs.close();
+				carregarComboBoxCliente(comboCliente);
 			}
-			carregarComboBoxCliente(combo);
 
 			comando.close();
 			con.close();
-			conexao.fecharConexao(con);
 		} catch (SQLException e) {
 			System.out.println("Erro ao inserir no Banco de Dados.");
 			System.out.println("Verifique sua instrução SQL.");
@@ -58,7 +57,7 @@ public class ClienteDAO {
 
 		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
-		String sql = "select nomeCompleto_cliente from cliente";
+		String sql = "select * from cliente";
 
 		try {
 			PreparedStatement comando = con.prepareStatement(sql);
@@ -70,7 +69,6 @@ public class ClienteDAO {
 
 			rs.close();
 			comando.close();
-			conexao.fecharConexao(con);
 
 		} catch (SQLException e) {
 			System.out.println("Erro ao inserir no Banco de Dados.");
@@ -82,40 +80,6 @@ public class ClienteDAO {
 					JOptionPane.ERROR_MESSAGE);
 		}
 		return comboCliente;
-	}
-
-	public static List<Cliente> buscarTodos() {
-		List<Cliente> clientes = new LinkedList<>();
-
-		Conexao conexao = Conexao.Conectar();
-		Connection con = conexao.obterConexao();
-
-		String sql = "SELECT * FROM cliente";
-
-		try {
-			Statement comando = con.createStatement();
-			ResultSet rs = comando.executeQuery(sql);
-
-			while (rs.next()) {
-				Cliente cliente = new Cliente(rs.getInt("id_cliente"), rs.getString("nome_cliente"),
-						rs.getString("endereco_cliente"), rs.getString("cpf_cliente"), rs.getString("email_cliente"),
-						rs.getString("telefone_cliente"));
-				clientes.add(cliente);
-			}
-
-			rs.close();
-			conexao.fecharConexao(con);
-			comando.close();
-			con.close();
-
-		} catch (SQLException e) {
-			System.out.println("Erro ao buscar no Banco de Dados.");
-			System.out.println("Verifique sua instrução SQL.");
-			System.out.println("Mensagem de erro: " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		return clientes;
 	}
 
 	public static List<String> buscarNomesClientes() {
@@ -134,7 +98,6 @@ public class ClienteDAO {
 				nomes.add(rs.getString("nomeCompleto_cliente"));
 			}
 			rs.close();
-			conexao.fecharConexao(con);
 			comando.close();
 			con.close();
 		} catch (SQLException e) {
@@ -160,7 +123,6 @@ public class ClienteDAO {
 
 			ok = comando.executeUpdate() > 0;
 
-			conexao.fecharConexao(con);
 			comando.close();
 			con.close();
 
