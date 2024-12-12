@@ -56,6 +56,10 @@ public class SistemaGerenciamentoController extends JFrame {
 	private VeiculoDAO vDAO;
 	private ModeloDAO mDAO;
 	private FabricanteDAO fDAO;
+	private JTextField textFieldDescricao;
+	private JTextField textFieldValor;
+	private JTextField textFieldQuant;
+	private JTextField textField;
 
 	public SistemaGerenciamentoController() {
 		this.cDAO = new ClienteDAO();
@@ -469,11 +473,52 @@ public class SistemaGerenciamentoController extends JFrame {
 
 		JTabbedPane tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tabbedPane_1.setBounds(81, 128, 422, 377);
+		tabbedPane_1.setBounds(54, 128, 422, 313);
 		painelCadastroOS.add(tabbedPane_1);
+		
+		JPanel painelPecas = new JPanel();
+		tabbedPane_1.addTab("Peças", null, painelPecas, null);
+		painelPecas.setLayout(null);
+		
+		JButton btnCadastrarOS = new JButton("Cadastrar");
+		btnCadastrarOS.setBounds(162, 229, 89, 23);
+		painelPecas.add(btnCadastrarOS);
+		
+		textFieldDescricao = new JTextField();
+		textFieldDescricao.setBounds(13, 76, 276, 20);
+		painelPecas.add(textFieldDescricao);
+		textFieldDescricao.setColumns(10);
+		
+		textFieldValor = new JTextField();
+		textFieldValor.setColumns(10);
+		textFieldValor.setBounds(13, 145, 276, 20);
+		painelPecas.add(textFieldValor);
+		
+		textFieldQuant = new JTextField();
+		textFieldQuant.setColumns(10);
+		textFieldQuant.setBounds(13, 206, 276, 20);
+		painelPecas.add(textFieldQuant);
+		
+		JLabel lblDescricao = new JLabel("Descrição: ");
+		lblDescricao.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblDescricao.setBounds(13, 62, 105, 14);
+		painelPecas.add(lblDescricao);
+		
+		JLabel lblValor = new JLabel("Valor: ");
+		lblValor.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblValor.setBounds(13, 126, 54, 14);
+		painelPecas.add(lblValor);
+		
+		JLabel lblQuantidade = new JLabel("Quantidade: ");
+		lblQuantidade.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblQuantidade.setBounds(13, 188, 105, 14);
+		painelPecas.add(lblQuantidade);
+		
+		JPanel painelPagamento = new JPanel();
+		tabbedPane_1.addTab("Pagamento", null, painelPagamento, null);
 
 		TextArea textArea_1 = new TextArea();
-		textArea_1.setBounds(509, 153, 164, 352);
+		textArea_1.setBounds(482, 148, 252, 293);
 		painelCadastroOS.add(textArea_1);
 
 		JButton btnNewButton = new JButton("Criar O.S");
@@ -481,8 +526,39 @@ public class SistemaGerenciamentoController extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnNewButton.setBounds(294, 542, 221, 25);
+		btnNewButton.setBounds(297, 578, 221, 25);
 		painelCadastroOS.add(btnNewButton);
+		
+		JLabel lblNewLabel_1 = new JLabel("Subtotal:");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_1.setForeground(new Color(255, 255, 255));
+		lblNewLabel_1.setBounds(486, 456, 60, 14);
+		painelCadastroOS.add(lblNewLabel_1);
+		
+		textField = new JTextField();
+		textField.setBounds(588, 454, 146, 20);
+		painelCadastroOS.add(textField);
+		textField.setColumns(10);
+		
+		JComboBox comboBox_FormaPagamento = new JComboBox();
+		comboBox_FormaPagamento.setBounds(588, 485, 146, 22);
+		painelCadastroOS.add(comboBox_FormaPagamento);
+		
+		JLabel lblNewLabel_2 = new JLabel("F. Pagamento:");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_2.setForeground(new Color(255, 255, 255));
+		lblNewLabel_2.setBounds(486, 489, 92, 14);
+		painelCadastroOS.add(lblNewLabel_2);
+		
+		JLabel lblParcelas = new JLabel("Parcelas: ");
+		lblParcelas.setForeground(Color.WHITE);
+		lblParcelas.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblParcelas.setBounds(486, 517, 102, 14);
+		painelCadastroOS.add(lblParcelas);
+		
+		JComboBox comboBox_FormaPagamento_1 = new JComboBox();
+		comboBox_FormaPagamento_1.setBounds(588, 518, 146, 22);
+		painelCadastroOS.add(comboBox_FormaPagamento_1);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 0));
