@@ -148,41 +148,4 @@ public class ClienteDAO {
 	    }
 	    return ok;
 	}
-
-//	private void atualizarCliente(int idCliente) {
-//	        String nome = textField_Nome_Cliente1.getText();
-//	    String endereco = textField_Endereco.getText();
-//	    String cpf = textField_CPF.getText();
-//	    String email = textField_emial.getText();
-//	    String telefoneCliente = telefone.getText();
-//
-//	    
-//	    if (nome.isEmpty() || cpf.isEmpty() || email.isEmpty() || telefoneCliente.isEmpty()) {
-//	        JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", "Erro", JOptionPane.WARNING_MESSAGE);
-//	        return;
-//	    }
-//
-//	    boolean atualizado = ClienteDAO.atualizar(idCliente, nome, endereco, cpf, email, telefoneCliente);
-//
-//	    if (atualizado) {
-//	        JOptionPane.showMessageDialog(null, "Informações do cliente atualizadas com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-//	        carregarInformacoesCliente(idCliente);     } else {
-//	        JOptionPane.showMessageDialog(null, "Erro ao atualizar informações do cliente.", "Erro", JOptionPane.ERROR_MESSAGE);
-//	    }
-//	}
-//
-//	Listener do botão:
-//
-//	btnSalvarAlteracoes.addActionListener(new ActionListener() {
-//	    @Override
-//	    public void actionPerformed(ActionEvent e) {
-//	        Cliente clienteSelecionado = (Cliente) comboBoxSelecCliente.getSelectedItem();
-//	        if (clienteSelecionado != null) {
-//	            atualizarCliente(clienteSelecionado.getId_cliente());
-//	        } else {
-//	            JOptionPane.showMessageDialog(null, "Nenhum cliente selecionado!", "Erro", JOptionPane.ERROR_MESSAGE);
-//	        }
-//	    }
-//	});
-
 }

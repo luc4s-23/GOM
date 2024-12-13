@@ -49,7 +49,7 @@ public class VeiculoDAO {
 
 	}
 	
-	public List<Veiculo> buscarVeiculosPorCliente(int idCliente) {
+	public static List<Veiculo> buscarVeiculosPorCliente(int idCliente) {
 	    List<Veiculo> veiculos = new ArrayList<>();
 
 	    Conexao conexao = Conexao.Conectar();

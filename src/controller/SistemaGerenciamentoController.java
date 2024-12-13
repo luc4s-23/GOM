@@ -32,6 +32,8 @@ import model.DAO.ClienteDAO;
 import model.DAO.FabricanteDAO;
 import model.DAO.ModeloDAO;
 import model.DAO.VeiculoDAO;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
 
 public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textField_NomeCliente;
@@ -61,6 +63,7 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textFieldQuant;
 	private JTextField textField;
 	private JTextField textField_Nome_Cliente_consulta;
+	private JTable tableVeiculos;
 
 	public SistemaGerenciamentoController() {
 		this.cDAO = new ClienteDAO();
@@ -393,24 +396,16 @@ public class SistemaGerenciamentoController extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Cliente clienteSelecionado = (Cliente) comboBoxSelecCliente.getSelectedItem();
-				System.out.println("id: "+clienteSelecionado.getId_cliente());
-				if (clienteSelecionado != null) {
-					int idCliente = clienteSelecionado.getId_cliente();
-
-					// Consulta o cliente no banco de dados
-					Cliente cliente = ClienteDAO.consultarCliente(idCliente);
-
-					// Verifica se o cliente foi encontrado
-					if (cliente != null) {
-						// Preenche os campos com os dados do cliente
-						textField_Nome_Cliente_consulta.setText(cliente.getNome_cliente());
-						textField_Endereco_consulta.setText(cliente.getEndereco_cliente());
-						textField_CPF_consulta.setText(cliente.getCpf_cliente());
-						textField_emial_consulta.setText(cliente.getEmail_cliente());
-						textField_telefone_consulta.setText(cliente.getTelefone_cliente());
-					}
-				}
-
+				int idCliente = clienteSelecionado.getId_cliente();
+				Cliente cliente = ClienteDAO.consultarCliente(idCliente);
+				textField_Nome_Cliente_consulta.setText(cliente.getNome_cliente());
+				textField_Endereco_consulta.setText(cliente.getEndereco_cliente());
+				textField_CPF_consulta.setText(cliente.getCpf_cliente());
+				textField_emial_consulta.setText(cliente.getEmail_cliente());
+				textField_telefone_consulta.setText(cliente.getTelefone_cliente());
+				
+				VeiculoDAO.buscarVeiculosPorCliente(idCliente);
+				//tableVeiculos.
 			}
 		});
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
@@ -418,13 +413,15 @@ public class SistemaGerenciamentoController extends JFrame {
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
 
+		/*
 		tableVeiculosCliente = new JTable();
 		tableVeiculosCliente.setBounds(116, 372, 521, 112);
 		painelConsultaCliente.add(tableVeiculosCliente);
-
+		*/
+		
 		JButton btnSalvarAlteracoes = new JButton("Salvar Alterações");
 		btnSalvarAlteracoes.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnSalvarAlteracoes.setBounds(205, 505, 357, 25);
+		btnSalvarAlteracoes.setBounds(205, 576, 357, 25);
 		painelConsultaCliente.add(btnSalvarAlteracoes);
 
 		textField_Nome_Cliente_consulta = new JTextField();
@@ -437,6 +434,20 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblEndereco_1_1.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblEndereco_1_1.setBounds(116, 180, 79, 14);
 		painelConsultaCliente.add(lblEndereco_1_1);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(80, 368, 632, 188);
+		painelConsultaCliente.add(scrollPane);
+		
+		tableVeiculos = new JTable();
+		tableVeiculos.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Fabricante", "Modelo", "Ano", "Motor", "placa"
+			}
+		));
+		scrollPane.setViewportView(tableVeiculos);
 
 		JPanel painelDevedores = new JPanel();
 		painelDevedores.setBackground(new Color(0, 0, 0));
@@ -660,6 +671,7 @@ public class SistemaGerenciamentoController extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cl = (CardLayout) painelPrincipal.getLayout();
 				cl.show(painelPrincipal, "PAINEL CONSULTA CLIENTE");
+				resetarCampos(painelDevedores);
 
 			}
 		});
