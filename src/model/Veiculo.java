@@ -4,6 +4,7 @@ public class Veiculo {
 	private int id_carro;
 	private String placa;
 	private String motor;
+	private int ano;
 	private int fk_id_cliente;
 	private int fk_id_modelo;
 	
@@ -57,5 +58,11 @@ public class Veiculo {
 	public String toString() {
 		return "placa: " + placa + 
 				", motor: " + motor;
+	}
+	public int getAno() {
+		return ano;
+	}
+	public void setAno(int ano) {
+		this.ano = ano;
 	}	
 }

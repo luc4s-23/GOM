@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Veiculo;
 import util.Conexao;
@@ -46,4 +48,32 @@ public class VeiculoDAO {
 		return veiculo;
 
 	}
+	
+	public List<Veiculo> buscarVeiculosPorCliente(int idCliente) {
+	    List<Veiculo> veiculos = new ArrayList<>();
+
+	    Conexao conexao = Conexao.Conectar();
+	    Connection con = conexao.obterConexao();
+
+	    String sql = "SELECT v.*, m.descricao_modelo AS modelo " +
+	                 "FROM veiculo v " +
+	                 "JOIN modelo m ON v.fk_id_modelo = m.id_modelo " +
+	                 "WHERE v.fk_id_cliente = ?";
+	    try (PreparedStatement comando = con.prepareStatement(sql)) {
+	        comando.setInt(1, idCliente);
+	        ResultSet rs = comando.executeQuery();
+	        while (rs.next()) {
+	            Veiculo veiculo = new Veiculo();
+	            veiculo.setPlaca(rs.getString("placa"));
+	            veiculo.setMotor(rs.getString("motor"));
+	            veiculo.setId_modelo(rs.getInt("id_modelo"));
+	            veiculo.setAno(rs.getInt("ano"));
+	            veiculos.add(veiculo);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return veiculos;
+	}
+	
 }

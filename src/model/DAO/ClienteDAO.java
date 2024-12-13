@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -17,7 +16,7 @@ import util.Conexao;
 public class ClienteDAO {
 
 	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone,
-			JComboBox<String> comboCliente) {
+			JComboBox<Cliente> comboCliente) {
 
 		Cliente cliente = null;
 		Conexao conexao = Conexao.Conectar();
@@ -48,25 +47,34 @@ public class ClienteDAO {
 			System.out.println("Verifique sua instrução SQL.");
 			System.out.println("Mensagem de erro: " + e.getMessage());
 			e.printStackTrace();
+
+			// Verifica se o erro é de duplicação (violação de chave única)
+			if (e.getErrorCode() == 1062) {
+				JOptionPane.showMessageDialog(null, "Dados incorretos ou duplicados!", null, JOptionPane.ERROR_MESSAGE);
+				//System.out.println("Erro de integridade no banco de dados (provavelmente duplicação).");
+			}
 		}
 		return cliente;
 	}
 
-	public static JComboBox<String> carregarComboBoxCliente(JComboBox<String> comboCliente) {
+	public static JComboBox<Cliente> carregarComboBoxCliente(JComboBox<Cliente> comboCliente) {
 		comboCliente.removeAllItems();
 
 		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
-		String sql = "select * from cliente";
+		String sql = "select * from cliente order by nomeCompleto_cliente";
 
 		try {
 			PreparedStatement comando = con.prepareStatement(sql);
 			ResultSet rs = comando.executeQuery();
 
 			while (rs.next()) {
-				comboCliente.addItem(rs.getString("nomeCompleto_cliente"));
+				Cliente cliente = new Cliente();
+				cliente.setId_cliente(rs.getInt("id_cliente"));
+				cliente.setNome_cliente(rs.getString("nomeCompleto_cliente"));
+				comboCliente.addItem(cliente);
 			}
-
+			comboCliente.setSelectedIndex(-1);
 			rs.close();
 			comando.close();
 
@@ -82,88 +90,99 @@ public class ClienteDAO {
 		return comboCliente;
 	}
 
-	public static List<String> buscarNomesClientes() {
-		List<String> nomes = new LinkedList<String>();
+	public static Cliente consultarCliente(int idCliente) {
+		Cliente cliente = null;
 
 		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
 
-		String sql = "select DISTINCT nomeCompleto_cliente from cliente";
-
+		String sql = "select * from cliente where id_cliente=?";
 		try {
 			PreparedStatement comando = con.prepareStatement(sql);
+			comando.setInt(1, idCliente);
+
 			ResultSet rs = comando.executeQuery();
 
-			while (rs.next()) {
-				nomes.add(rs.getString("nomeCompleto_cliente"));
+			if (rs.next()) {
+				cliente = new Cliente();
+				cliente.setId_cliente(rs.getInt("id_cliente"));
+				cliente.setNome_cliente(rs.getString("nomeCompleto_cliente"));
+				cliente.setEndereco_cliente(rs.getString("endereco_cliente"));
+				cliente.setCpf_cliente(rs.getString("cpf_cliente"));
+				cliente.setEmail_cliente(rs.getString("email_cliente"));
+				cliente.setTelefone_cliente(rs.getString("telefone_cliente"));
 			}
-			rs.close();
-			comando.close();
-			con.close();
+
 		} catch (SQLException e) {
-			System.out.println("Erro ao buscar no Banco de Dados.");
+			System.out.println("Erro ao inserir no Banco de Dados.");
 			System.out.println("Verifique sua instrução SQL.");
 			System.out.println("Mensagem de erro: " + e.getMessage());
 			e.printStackTrace();
+
+			JOptionPane.showMessageDialog(null, "Ocorreu erro ao carregar a Combo Box", "Erro",
+					JOptionPane.ERROR_MESSAGE);
 		}
-		return nomes;
-	}
 
-	public static boolean excluir(int id) {
-		boolean ok = false;
-
-		Conexao conexao = Conexao.Conectar();
-		Connection con = conexao.obterConexao();
-
-		String sql = "DELETE FROM cliente WHERE id_cliente = ?";
-
-		try {
-			PreparedStatement comando = con.prepareStatement(sql);
-			comando.setInt(1, id);
-
-			ok = comando.executeUpdate() > 0;
-
-			comando.close();
-			con.close();
-
-		} catch (SQLException e) {
-			System.out.println("Erro ao excluir no Banco de Dados.");
-			System.out.println("Verifique sua instrução SQL.");
-			System.out.println("Mensagem de erro: " + e.getMessage());
-			e.printStackTrace();
-		}
-		return ok;
+		return cliente;
 	}
 
 	public static boolean atualizar(int id, String nome, String endereco, String cpf, String email, String telefone) {
-		boolean ok = false;
+	    boolean ok = false;
 
-		Conexao conexao = Conexao.Conectar();
-		Connection con = conexao.obterConexao();
+	    Conexao conexao = Conexao.Conectar();
+	    Connection con = conexao.obterConexao();
 
-		String sql = "UPDATE cliente SET nome_cliente = ?, endereco_cliente = ?, cpf_cliente = ?, email_cliente = ?, telefone_cliente = ? WHERE id_cliente = ?";
+	    String sql = "UPDATE cliente SET nomeCompleto_cliente = ?, endereco_cliente = ?, cpf_cliente = ?, email_cliente = ?, telefone_cliente = ? WHERE id_cliente = ?";
 
-		try {
-			PreparedStatement comando = con.prepareStatement(sql);
-			comando.setString(1, nome);
-			comando.setString(2, endereco);
-			comando.setString(3, cpf);
-			comando.setString(4, email);
-			comando.setString(5, telefone);
-			comando.setInt(6, id);
+	    try (PreparedStatement comando = con.prepareStatement(sql)) {
+	        comando.setString(1, nome);
+	        comando.setString(2, endereco);
+	        comando.setString(3, cpf);
+	        comando.setString(4, email);
+	        comando.setString(5, telefone);
+	        comando.setInt(6, id);
 
-			ok = comando.executeUpdate() > 0;
-
-			comando.close();
-			con.close();
-
-		} catch (SQLException e) {
-			System.out.println("Erro ao atualizar no Banco de Dados.");
-			System.out.println("Verifique sua instrução SQL.");
-			System.out.println("Mensagem de erro: " + e.getMessage());
-			e.printStackTrace();
-		}
-		return ok;
+	        ok = comando.executeUpdate() > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return ok;
 	}
+
+//	private void atualizarCliente(int idCliente) {
+//	        String nome = textField_Nome_Cliente1.getText();
+//	    String endereco = textField_Endereco.getText();
+//	    String cpf = textField_CPF.getText();
+//	    String email = textField_emial.getText();
+//	    String telefoneCliente = telefone.getText();
+//
+//	    
+//	    if (nome.isEmpty() || cpf.isEmpty() || email.isEmpty() || telefoneCliente.isEmpty()) {
+//	        JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", "Erro", JOptionPane.WARNING_MESSAGE);
+//	        return;
+//	    }
+//
+//	    boolean atualizado = ClienteDAO.atualizar(idCliente, nome, endereco, cpf, email, telefoneCliente);
+//
+//	    if (atualizado) {
+//	        JOptionPane.showMessageDialog(null, "Informações do cliente atualizadas com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+//	        carregarInformacoesCliente(idCliente);     } else {
+//	        JOptionPane.showMessageDialog(null, "Erro ao atualizar informações do cliente.", "Erro", JOptionPane.ERROR_MESSAGE);
+//	    }
+//	}
+//
+//	Listener do botão:
+//
+//	btnSalvarAlteracoes.addActionListener(new ActionListener() {
+//	    @Override
+//	    public void actionPerformed(ActionEvent e) {
+//	        Cliente clienteSelecionado = (Cliente) comboBoxSelecCliente.getSelectedItem();
+//	        if (clienteSelecionado != null) {
+//	            atualizarCliente(clienteSelecionado.getId_cliente());
+//	        } else {
+//	            JOptionPane.showMessageDialog(null, "Nenhum cliente selecionado!", "Erro", JOptionPane.ERROR_MESSAGE);
+//	        }
+//	    }
+//	});
 
 }
