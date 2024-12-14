@@ -17,12 +17,15 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
 import model.Cliente;
 import model.Fabricante;
@@ -32,8 +35,6 @@ import model.DAO.ClienteDAO;
 import model.DAO.FabricanteDAO;
 import model.DAO.ModeloDAO;
 import model.DAO.VeiculoDAO;
-import javax.swing.JScrollPane;
-import javax.swing.table.DefaultTableModel;
 
 public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textField_NomeCliente;
@@ -63,7 +64,9 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textFieldQuant;
 	private JTextField textField;
 	private JTextField textField_Nome_Cliente_consulta;
+	private JComboBox<Modelo> comboBoxModelo_CadastroVeiculo;
 	private JTable tableVeiculos;
+	private JTextField textField_Motor_CadastroVeiculo;
 
 	public SistemaGerenciamentoController() {
 		this.cDAO = new ClienteDAO();
@@ -229,15 +232,23 @@ public class SistemaGerenciamentoController extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				Cliente cliente = cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(),
 						textField_CPFCliente.getText(), textField_EmailCliente.getText(),
-						textField_TelefoneCliente.getText(), comboBoxSelecCliente);
+						textField_TelefoneCliente.getText());
 
 				Modelo modelo = (Modelo) comboBoxModelo.getSelectedItem();
-				if (vDAO != null) {
-					Veiculo veiculo = vDAO.inserirVeiculo(textField_Placa.getText(), textField_Motor.getText(),
-							cliente.getId_cliente(), modelo.getId_modelo());
-				}
+
+				Veiculo veiculo = vDAO.inserirVeiculo(textField_Placa.getText(), textField_Motor.getText(),
+						cliente.getId_cliente(), modelo.getId_modelo());
 
 				resetarCampos(painelCadastroCliente);
+
+				if (cliente == null) {
+					JOptionPane.showMessageDialog(null,
+							"Erro ao cadastrar o cliente. Verifique os dados e tente novamente.");
+					return;
+				} else if (cliente != null) {
+					JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso!");
+				}
+
 			}
 		});
 		painelCadastroCliente.add(btnCadastrarCliente);
@@ -258,8 +269,19 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblInfoVeiculo_1.setBounds(279, 188, 241, 25);
 		painelCadastrarVeiculo.add(lblInfoVeiculo_1);
 
-		JComboBox comboBoxFabricante_CadastroVeiculo = new JComboBox();
+		JComboBox<Fabricante> comboBoxFabricante_CadastroVeiculo = new JComboBox<Fabricante>();
+		fDAO.carregarComboBoxFabricante(comboBoxFabricante_CadastroVeiculo);
+
 		comboBoxFabricante_CadastroVeiculo.setBounds(212, 224, 357, 25);
+		comboBoxFabricante_CadastroVeiculo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Fabricante fabricante = (Fabricante) comboBoxFabricante_CadastroVeiculo.getSelectedItem();
+				ModeloDAO.carregarModelo(comboBoxModelo_CadastroVeiculo, fabricante.getId_fabricante());
+
+			}
+		});
 		painelCadastrarVeiculo.add(comboBoxFabricante_CadastroVeiculo);
 
 		JLabel lblMarca_1 = new JLabel("Fabricante:");
@@ -274,7 +296,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblModelo_1.setBounds(123, 269, 79, 14);
 		painelCadastrarVeiculo.add(lblModelo_1);
 
-		JComboBox comboBoxModelo_CadastroVeiculo = new JComboBox();
+		comboBoxModelo_CadastroVeiculo = new JComboBox();
 		comboBoxModelo_CadastroVeiculo.setBounds(212, 266, 357, 25);
 		painelCadastrarVeiculo.add(comboBoxModelo_CadastroVeiculo);
 
@@ -295,10 +317,6 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblMotor_1.setBounds(123, 349, 46, 14);
 		painelCadastrarVeiculo.add(lblMotor_1);
 
-		JComboBox comboBoxMotor_CadastroVeiculo = new JComboBox();
-		comboBoxMotor_CadastroVeiculo.setBounds(212, 345, 357, 25);
-		painelCadastrarVeiculo.add(comboBoxMotor_CadastroVeiculo);
-
 		JLabel lblPlaca_1 = new JLabel("Placa:");
 		lblPlaca_1.setForeground(new Color(255, 255, 255));
 		lblPlaca_1.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -310,7 +328,33 @@ public class SistemaGerenciamentoController extends JFrame {
 		textField_Placa_CadastroVeiculo.setBounds(212, 385, 357, 25);
 		painelCadastrarVeiculo.add(textField_Placa_CadastroVeiculo);
 
+		JLabel lblSelecCliente = new JLabel("Selecione o Cliente");
+		lblSelecCliente.setForeground(new Color(255, 255, 255));
+		lblSelecCliente.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblSelecCliente.setBounds(295, 78, 198, 25);
+		painelCadastrarVeiculo.add(lblSelecCliente);
+
+		JComboBox<Cliente> comboBox_Cliente_CadastroVeiculo = new JComboBox<Cliente>();
+		ClienteDAO.carregarComboBoxCliente(comboBox_Cliente_CadastroVeiculo);
+		comboBox_Cliente_CadastroVeiculo.setBounds(212, 114, 357, 25);
+		painelCadastrarVeiculo.add(comboBox_Cliente_CadastroVeiculo);
+
 		JButton btnCadastrarVeiculo = new JButton("Cadastrar veículo");
+		btnCadastrarVeiculo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				Cliente cliente = (Cliente) comboBox_Cliente_CadastroVeiculo.getSelectedItem();
+
+				Modelo modelo = (Modelo) comboBoxModelo_CadastroVeiculo.getSelectedItem();
+
+				Veiculo veiculo = vDAO.inserirVeiculo(textField_Placa_CadastroVeiculo.getText(), textField_Motor_CadastroVeiculo.getText(),
+						cliente.getId_cliente(), modelo.getId_modelo());
+				
+				resetarCampos(painelCadastrarVeiculo);
+			}
+		});
 		btnCadastrarVeiculo.setForeground(new Color(255, 255, 255));
 		btnCadastrarVeiculo.setBackground(new Color(0, 0, 0));
 		btnCadastrarVeiculo.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -318,15 +362,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		btnCadastrarVeiculo.setBorder(new LineBorder(Color.white));
 		painelCadastrarVeiculo.add(btnCadastrarVeiculo);
 
-		JLabel lblSelecCliente = new JLabel("Selecione o Cliente");
-		lblSelecCliente.setForeground(new Color(255, 255, 255));
-		lblSelecCliente.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblSelecCliente.setBounds(295, 78, 198, 25);
-		painelCadastrarVeiculo.add(lblSelecCliente);
-
-		JComboBox comboBox_Cliente_CadastroVeiculo = new JComboBox();
-		comboBox_Cliente_CadastroVeiculo.setBounds(212, 114, 357, 25);
-		painelCadastrarVeiculo.add(comboBox_Cliente_CadastroVeiculo);
+		textField_Motor_CadastroVeiculo = new JTextField();
+		textField_Motor_CadastroVeiculo.setColumns(10);
+		textField_Motor_CadastroVeiculo.setBounds(212, 345, 357, 25);
+		painelCadastrarVeiculo.add(textField_Motor_CadastroVeiculo);
 
 		JPanel painelConsultaCliente = new JPanel();
 		painelConsultaCliente.setBackground(new Color(0, 0, 0));
@@ -403,9 +442,9 @@ public class SistemaGerenciamentoController extends JFrame {
 				textField_CPF_consulta.setText(cliente.getCpf_cliente());
 				textField_emial_consulta.setText(cliente.getEmail_cliente());
 				textField_telefone_consulta.setText(cliente.getTelefone_cliente());
-				
-				VeiculoDAO.buscarVeiculosPorCliente(idCliente);
-				//tableVeiculos.
+
+				// VeiculoDAO.buscarVeiculosPorCliente(idCliente);
+				// tableVeiculos.
 			}
 		});
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
@@ -414,11 +453,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelConsultaCliente.add(comboBoxSelecCliente);
 
 		/*
-		tableVeiculosCliente = new JTable();
-		tableVeiculosCliente.setBounds(116, 372, 521, 112);
-		painelConsultaCliente.add(tableVeiculosCliente);
-		*/
-		
+		 * tableVeiculosCliente = new JTable(); tableVeiculosCliente.setBounds(116, 372,
+		 * 521, 112); painelConsultaCliente.add(tableVeiculosCliente);
+		 */
+
 		JButton btnSalvarAlteracoes = new JButton("Salvar Alterações");
 		btnSalvarAlteracoes.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnSalvarAlteracoes.setBounds(205, 576, 357, 25);
@@ -434,19 +472,16 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblEndereco_1_1.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblEndereco_1_1.setBounds(116, 180, 79, 14);
 		painelConsultaCliente.add(lblEndereco_1_1);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(80, 368, 632, 188);
 		painelConsultaCliente.add(scrollPane);
-		
+
 		tableVeiculos = new JTable();
-		tableVeiculos.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Fabricante", "Modelo", "Ano", "Motor", "placa"
-			}
-		));
+		tableVeiculos.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Fabricante", "Modelo", "Ano", "Motor", "placa" }));
+		
+		
 		scrollPane.setViewportView(tableVeiculos);
 
 		JPanel painelDevedores = new JPanel();

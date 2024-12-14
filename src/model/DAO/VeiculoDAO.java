@@ -13,7 +13,7 @@ import util.Conexao;
 
 public class VeiculoDAO {
 
-	public Veiculo inserirVeiculo(String placa, String motor, int fk_id_cliente, int fk_id_modelo) {
+	public static Veiculo inserirVeiculo(String placa, String motor, int fk_id_cliente, int fk_id_modelo) {
 		Veiculo veiculo = null;
 
 		Conexao conexao = Conexao.Conectar();

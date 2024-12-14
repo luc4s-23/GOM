@@ -15,8 +15,7 @@ import util.Conexao;
 
 public class ClienteDAO {
 
-	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone,
-			JComboBox<Cliente> comboCliente) {
+	public static Cliente inserir(String nome, String endereco, String cpf, String email, String telefone) {
 
 		Cliente cliente = null;
 		Conexao conexao = Conexao.Conectar();
@@ -37,7 +36,6 @@ public class ClienteDAO {
 					cliente = new Cliente(id, nome, endereco, cpf, email, telefone);
 				}
 				rs.close();
-				carregarComboBoxCliente(comboCliente);
 			}
 
 			comando.close();

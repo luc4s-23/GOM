@@ -30,7 +30,6 @@ public class FabricanteDAO {
 			while (rs.next()) {
 				Fabricante fabricante = new Fabricante();
 				fabricante.setId_fabricante(rs.getInt("id_fabricante"));
-				//System.out.println("ID - "+fabricante.getId_fabricante());
 				fabricante.setNome_fabricante(rs.getString("nome"));
 				comboFabricante.addItem(fabricante);
 			}

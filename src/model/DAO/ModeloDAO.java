@@ -32,7 +32,6 @@ public class ModeloDAO {
 				modelo.setFk_id_fabricante(rs.getInt("fk_id_fabricante"));
 				modelo.setNome_modelo(rs.getString("nome"));
 				comboModelo.addItem(modelo);
-				System.out.println(modelo.getNome_modelo());
 
 			}
 
