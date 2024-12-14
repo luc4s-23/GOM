@@ -66,7 +66,7 @@ public class VeiculoDAO {
 	            Veiculo veiculo = new Veiculo();
 	            veiculo.setPlaca(rs.getString("placa"));
 	            veiculo.setMotor(rs.getString("motor"));
-	            veiculo.setId_modelo(rs.getInt("id_modelo"));
+	            veiculo.setId_modelo(rs.getInt("fk_id_modelo"));
 	            veiculo.setAno(rs.getInt("ano"));
 	            veiculos.add(veiculo);
 	        }
