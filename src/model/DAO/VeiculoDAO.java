@@ -8,10 +8,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 import model.Veiculo;
 import util.Conexao;
 
 public class VeiculoDAO {
+	private JTable tabelaVeiculos;
 
 	public static Veiculo inserirVeiculo(String placa, String motor, int fk_id_cliente, int fk_id_modelo) {
 		Veiculo veiculo = null;
@@ -48,32 +52,31 @@ public class VeiculoDAO {
 		return veiculo;
 
 	}
-	
+
 	public static List<Veiculo> buscarVeiculosPorCliente(int idCliente) {
-	    List<Veiculo> veiculos = new ArrayList<>();
+		List<Veiculo> veiculos = new ArrayList<>();
 
-	    Conexao conexao = Conexao.Conectar();
-	    Connection con = conexao.obterConexao();
+		// Conexão ao banco de dados
+		Conexao conexao = Conexao.Conectar();
+		Connection con = conexao.obterConexao();
 
-	    String sql = "SELECT v.*, m.descricao_modelo AS modelo " +
-	                 "FROM veiculo v " +
-	                 "JOIN modelo m ON v.fk_id_modelo = m.id_modelo " +
-	                 "WHERE v.fk_id_cliente = ?";
-	    try (PreparedStatement comando = con.prepareStatement(sql)) {
-	        comando.setInt(1, idCliente);
-	        ResultSet rs = comando.executeQuery();
-	        while (rs.next()) {
-	            Veiculo veiculo = new Veiculo();
-	            veiculo.setPlaca(rs.getString("placa"));
-	            veiculo.setMotor(rs.getString("motor"));
-	            veiculo.setId_modelo(rs.getInt("id_modelo"));
-	            veiculo.setAno(rs.getInt("ano"));
-	            veiculos.add(veiculo);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return veiculos;
+		String sql = "SELECT * FROM veiculo WHERE fk_id_cliente = ?";
+
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setInt(1, idCliente);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Veiculo veiculo = new Veiculo();
+				veiculo.setPlaca(rs.getString("placa"));
+				veiculo.setMotor(rs.getString("motor"));
+				veiculo.setId_modelo(rs.getInt("fk_id_modelo"));
+				veiculos.add(veiculo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return veiculos;
 	}
-	
+
 }
