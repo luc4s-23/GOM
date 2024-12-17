@@ -8,12 +8,17 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 import model.Veiculo;
 import util.Conexao;
 
 public class VeiculoDAO {
+	private JTable tabelaVeiculos;
 
-	public Veiculo inserirVeiculo(String placa, String motor, int fk_id_cliente, int fk_id_modelo) {
+	public static Veiculo inserirVeiculo(String placa, String motor, int fk_id_cliente, int fk_id_modelo) {
 		Veiculo veiculo = null;
 
 		Conexao conexao = Conexao.Conectar();
@@ -48,32 +53,67 @@ public class VeiculoDAO {
 		return veiculo;
 
 	}
-	
+
 	public static List<Veiculo> buscarVeiculosPorCliente(int idCliente) {
-	    List<Veiculo> veiculos = new ArrayList<>();
+		List<Veiculo> veiculos = new ArrayList<>();
 
-	    Conexao conexao = Conexao.Conectar();
-	    Connection con = conexao.obterConexao();
+		// Conexão ao banco de dados
+		Conexao conexao = Conexao.Conectar();
+		Connection con = conexao.obterConexao();
 
-	    String sql = "SELECT v.*, m.descricao_modelo AS modelo " +
-	                 "FROM veiculo v " +
-	                 "JOIN modelo m ON v.fk_id_modelo = m.id_modelo " +
-	                 "WHERE v.fk_id_cliente = ?";
-	    try (PreparedStatement comando = con.prepareStatement(sql)) {
-	        comando.setInt(1, idCliente);
-	        ResultSet rs = comando.executeQuery();
-	        while (rs.next()) {
-	            Veiculo veiculo = new Veiculo();
-	            veiculo.setPlaca(rs.getString("placa"));
-	            veiculo.setMotor(rs.getString("motor"));
-	            veiculo.setId_modelo(rs.getInt("fk_id_modelo"));
-	            veiculo.setAno(rs.getInt("ano"));
-	            veiculos.add(veiculo);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return veiculos;
+		String sql = "SELECT * FROM veiculo WHERE fk_id_cliente = ?";
+
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setInt(1, idCliente);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Veiculo veiculo = new Veiculo();
+				veiculo.setPlaca(rs.getString("placa"));
+				veiculo.setMotor(rs.getString("motor"));
+				veiculo.setId_modelo(rs.getInt("fk_id_modelo"));
+				veiculo.setAno(rs.getInt("ano"));
+				veiculos.add(veiculo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return veiculos;
 	}
-	
+
+	public static JComboBox<String> carregarNomesVeiculo(JComboBox<String> comboVeiculo, int id_cliente) {
+		comboVeiculo.removeAllItems();
+		System.out.println("ID Cliente Selecionado: " + id_cliente);
+
+		Conexao conexao = Conexao.Conectar();
+		Connection con = conexao.obterConexao();
+
+		// Consulta SQL com JOIN para buscar o nome do modelo associado ao veículo
+		String sql = "SELECT modelo.nome " + "FROM veiculo "
+				+ "INNER JOIN modelo ON veiculo.fk_id_modelo = modelo.id_modelo " + "WHERE veiculo.fk_id_cliente = ?";
+
+		try {
+			PreparedStatement comando = con.prepareStatement(sql);
+			comando.setInt(1, id_cliente);
+
+			ResultSet rs = comando.executeQuery();
+
+			while (rs.next()) {
+				String nomeVeiculo = rs.getString("nome"); // Nome do modelo do veículo
+				comboVeiculo.addItem(nomeVeiculo); // Adiciona apenas o nome ao JComboBox
+			}
+
+			rs.close();
+			comando.close();
+			con.close();
+
+		} catch (SQLException e) {
+			System.out.println("Erro ao buscar nomes de veículos no Banco de Dados.");
+			System.out.println("Verifique sua instrução SQL.");
+			System.out.println("Mensagem de erro: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return comboVeiculo;
+	}
+
 }

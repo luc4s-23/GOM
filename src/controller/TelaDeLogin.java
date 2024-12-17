@@ -60,6 +60,7 @@ public class TelaDeLogin extends JFrame {
 		});
 
 		JButton botaoLogar = new JButton("Logar");
+		getRootPane().setDefaultButton(botaoLogar);
 		botaoLogar.setForeground(new Color(255, 255, 255));
 		botaoLogar.setBackground(new Color(0, 0, 0));
 		botaoLogar.setFont(new Font("SansSerif", Font.BOLD, 13));

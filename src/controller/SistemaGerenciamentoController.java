@@ -8,6 +8,9 @@ import java.awt.Font;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -17,12 +20,15 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
 import model.Cliente;
 import model.Fabricante;
@@ -32,8 +38,6 @@ import model.DAO.ClienteDAO;
 import model.DAO.FabricanteDAO;
 import model.DAO.ModeloDAO;
 import model.DAO.VeiculoDAO;
-import javax.swing.JScrollPane;
-import javax.swing.table.DefaultTableModel;
 
 public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textField_NomeCliente;
@@ -61,9 +65,11 @@ public class SistemaGerenciamentoController extends JFrame {
 	private JTextField textFieldDescricao;
 	private JTextField textFieldValor;
 	private JTextField textFieldQuant;
-	private JTextField textField;
+	private JTextField textFieldSubTotal;
 	private JTextField textField_Nome_Cliente_consulta;
+	private JComboBox<Modelo> comboBoxModelo_CadastroVeiculo;
 	private JTable tableVeiculos;
+	private JTextField textField_Motor_CadastroVeiculo;
 
 	public SistemaGerenciamentoController() {
 		this.cDAO = new ClienteDAO();
@@ -152,7 +158,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelCadastroCliente.add(lblTelefone);
 		// CLIENTE
 
-		JLabel lblMarca = new JLabel("Fabricanta:");
+		JLabel lblMarca = new JLabel("Fabricante:");
 		lblMarca.setForeground(new Color(255, 255, 255));
 		lblMarca.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblMarca.setBounds(123, 310, 79, 14);
@@ -229,15 +235,23 @@ public class SistemaGerenciamentoController extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				Cliente cliente = cDAO.inserir(textField_NomeCliente.getText(), textField_EnderecoCliente.getText(),
 						textField_CPFCliente.getText(), textField_EmailCliente.getText(),
-						textField_TelefoneCliente.getText(), comboBoxSelecCliente);
+						textField_TelefoneCliente.getText());
 
 				Modelo modelo = (Modelo) comboBoxModelo.getSelectedItem();
-				if (vDAO != null) {
-					Veiculo veiculo = vDAO.inserirVeiculo(textField_Placa.getText(), textField_Motor.getText(),
-							cliente.getId_cliente(), modelo.getId_modelo());
-				}
+
+				Veiculo veiculo = vDAO.inserirVeiculo(textField_Placa.getText(), textField_Motor.getText(),
+						cliente.getId_cliente(), modelo.getId_modelo());
 
 				resetarCampos(painelCadastroCliente);
+
+				if (cliente == null) {
+					JOptionPane.showMessageDialog(null,
+							"Erro ao cadastrar o cliente. Verifique os dados e tente novamente.");
+					return;
+				} else if (cliente != null) {
+					JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso!");
+				}
+
 			}
 		});
 		painelCadastroCliente.add(btnCadastrarCliente);
@@ -258,8 +272,19 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblInfoVeiculo_1.setBounds(279, 188, 241, 25);
 		painelCadastrarVeiculo.add(lblInfoVeiculo_1);
 
-		JComboBox comboBoxFabricante_CadastroVeiculo = new JComboBox();
+		JComboBox<Fabricante> comboBoxFabricante_CadastroVeiculo = new JComboBox<Fabricante>();
+		fDAO.carregarComboBoxFabricante(comboBoxFabricante_CadastroVeiculo);
+
 		comboBoxFabricante_CadastroVeiculo.setBounds(212, 224, 357, 25);
+		comboBoxFabricante_CadastroVeiculo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Fabricante fabricante = (Fabricante) comboBoxFabricante_CadastroVeiculo.getSelectedItem();
+				ModeloDAO.carregarModelo(comboBoxModelo_CadastroVeiculo, fabricante.getId_fabricante());
+
+			}
+		});
 		painelCadastrarVeiculo.add(comboBoxFabricante_CadastroVeiculo);
 
 		JLabel lblMarca_1 = new JLabel("Fabricante:");
@@ -274,7 +299,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblModelo_1.setBounds(123, 269, 79, 14);
 		painelCadastrarVeiculo.add(lblModelo_1);
 
-		JComboBox comboBoxModelo_CadastroVeiculo = new JComboBox();
+		comboBoxModelo_CadastroVeiculo = new JComboBox();
 		comboBoxModelo_CadastroVeiculo.setBounds(212, 266, 357, 25);
 		painelCadastrarVeiculo.add(comboBoxModelo_CadastroVeiculo);
 
@@ -295,10 +320,6 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblMotor_1.setBounds(123, 349, 46, 14);
 		painelCadastrarVeiculo.add(lblMotor_1);
 
-		JComboBox comboBoxMotor_CadastroVeiculo = new JComboBox();
-		comboBoxMotor_CadastroVeiculo.setBounds(212, 345, 357, 25);
-		painelCadastrarVeiculo.add(comboBoxMotor_CadastroVeiculo);
-
 		JLabel lblPlaca_1 = new JLabel("Placa:");
 		lblPlaca_1.setForeground(new Color(255, 255, 255));
 		lblPlaca_1.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -310,7 +331,33 @@ public class SistemaGerenciamentoController extends JFrame {
 		textField_Placa_CadastroVeiculo.setBounds(212, 385, 357, 25);
 		painelCadastrarVeiculo.add(textField_Placa_CadastroVeiculo);
 
+		JLabel lblSelecCliente = new JLabel("Selecione o Cliente");
+		lblSelecCliente.setForeground(new Color(255, 255, 255));
+		lblSelecCliente.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblSelecCliente.setBounds(295, 78, 198, 25);
+		painelCadastrarVeiculo.add(lblSelecCliente);
+
+		JComboBox<Cliente> comboBox_Cliente_CadastroVeiculo = new JComboBox<Cliente>();
+		ClienteDAO.carregarComboBoxCliente(comboBox_Cliente_CadastroVeiculo);
+		comboBox_Cliente_CadastroVeiculo.setBounds(212, 114, 357, 25);
+		painelCadastrarVeiculo.add(comboBox_Cliente_CadastroVeiculo);
+
 		JButton btnCadastrarVeiculo = new JButton("Cadastrar veículo");
+		btnCadastrarVeiculo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				Cliente cliente = (Cliente) comboBox_Cliente_CadastroVeiculo.getSelectedItem();
+
+				Modelo modelo = (Modelo) comboBoxModelo_CadastroVeiculo.getSelectedItem();
+
+				Veiculo veiculo = vDAO.inserirVeiculo(textField_Placa_CadastroVeiculo.getText(),
+						textField_Motor_CadastroVeiculo.getText(), cliente.getId_cliente(), modelo.getId_modelo());
+
+				resetarCampos(painelCadastrarVeiculo);
+			}
+		});
 		btnCadastrarVeiculo.setForeground(new Color(255, 255, 255));
 		btnCadastrarVeiculo.setBackground(new Color(0, 0, 0));
 		btnCadastrarVeiculo.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -318,15 +365,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		btnCadastrarVeiculo.setBorder(new LineBorder(Color.white));
 		painelCadastrarVeiculo.add(btnCadastrarVeiculo);
 
-		JLabel lblSelecCliente = new JLabel("Selecione o Cliente");
-		lblSelecCliente.setForeground(new Color(255, 255, 255));
-		lblSelecCliente.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblSelecCliente.setBounds(295, 78, 198, 25);
-		painelCadastrarVeiculo.add(lblSelecCliente);
-
-		JComboBox comboBox_Cliente_CadastroVeiculo = new JComboBox();
-		comboBox_Cliente_CadastroVeiculo.setBounds(212, 114, 357, 25);
-		painelCadastrarVeiculo.add(comboBox_Cliente_CadastroVeiculo);
+		textField_Motor_CadastroVeiculo = new JTextField();
+		textField_Motor_CadastroVeiculo.setColumns(10);
+		textField_Motor_CadastroVeiculo.setBounds(212, 345, 357, 25);
+		painelCadastrarVeiculo.add(textField_Motor_CadastroVeiculo);
 
 		JPanel painelConsultaCliente = new JPanel();
 		painelConsultaCliente.setBackground(new Color(0, 0, 0));
@@ -395,17 +437,26 @@ public class SistemaGerenciamentoController extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				Cliente clienteSelecionado = (Cliente) comboBoxSelecCliente.getSelectedItem();
 				int idCliente = clienteSelecionado.getId_cliente();
 				Cliente cliente = ClienteDAO.consultarCliente(idCliente);
+
 				textField_Nome_Cliente_consulta.setText(cliente.getNome_cliente());
 				textField_Endereco_consulta.setText(cliente.getEndereco_cliente());
 				textField_CPF_consulta.setText(cliente.getCpf_cliente());
 				textField_emial_consulta.setText(cliente.getEmail_cliente());
 				textField_telefone_consulta.setText(cliente.getTelefone_cliente());
-				
-				VeiculoDAO.buscarVeiculosPorCliente(idCliente);
-				//tableVeiculos.
+
+				List<Veiculo> veiculos = VeiculoDAO.buscarVeiculosPorCliente(idCliente);
+
+				DefaultTableModel modeloTabela = (DefaultTableModel) tableVeiculos.getModel();
+				modeloTabela.setRowCount(0);
+
+				for (Veiculo veiculo : veiculos) {
+					modeloTabela.addRow(new Object[] { veiculo.getId_modelo(), veiculo.getAno(), veiculo.getMotor(), veiculo.getPlaca()});
+				}
+
 			}
 		});
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
@@ -413,12 +464,6 @@ public class SistemaGerenciamentoController extends JFrame {
 		comboBoxSelecCliente.setBounds(205, 84, 357, 25);
 		painelConsultaCliente.add(comboBoxSelecCliente);
 
-		/*
-		tableVeiculosCliente = new JTable();
-		tableVeiculosCliente.setBounds(116, 372, 521, 112);
-		painelConsultaCliente.add(tableVeiculosCliente);
-		*/
-		
 		JButton btnSalvarAlteracoes = new JButton("Salvar Alterações");
 		btnSalvarAlteracoes.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnSalvarAlteracoes.setBounds(205, 576, 357, 25);
@@ -434,19 +479,23 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblEndereco_1_1.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblEndereco_1_1.setBounds(116, 180, 79, 14);
 		painelConsultaCliente.add(lblEndereco_1_1);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(80, 368, 632, 188);
 		painelConsultaCliente.add(scrollPane);
-		
+
 		tableVeiculos = new JTable();
-		tableVeiculos.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Fabricante", "Modelo", "Ano", "Motor", "placa"
-			}
-		));
+		DefaultTableModel modeloTabela = new DefaultTableModel();
+		tableVeiculos.setModel(modeloTabela);
+
+		modeloTabela.addColumn("Modelo");
+		modeloTabela.addColumn("Ano");
+		modeloTabela.addColumn("Motor");
+		modeloTabela.addColumn("placa");
+		
+		tableVeiculos.setModel(new DefaultTableModel(new Object[][] {},
+                new String[] { "Modelo", "Ano", "Motor", "placa" }));
+		
 		scrollPane.setViewportView(tableVeiculos);
 
 		JPanel painelDevedores = new JPanel();
@@ -483,8 +532,20 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblClienteOS_1.setBounds(54, 26, 199, 25);
 		painelCadastroOS.add(lblClienteOS_1);
 
-		JComboBox comboBoxClienteOS_1 = new JComboBox();
-		comboBoxClienteOS_1.setForeground(new Color(255, 255, 255));
+		JComboBox<String> comboBoxVeiculoOS_1 = new JComboBox();
+		
+		JComboBox<Cliente> comboBoxClienteOS_1 = new JComboBox();
+		ClienteDAO.carregarComboBoxCliente(comboBoxClienteOS_1);
+		comboBoxClienteOS_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				Cliente cliente = (Cliente) comboBoxClienteOS_1.getSelectedItem();
+				VeiculoDAO.carregarNomesVeiculo(comboBoxVeiculoOS_1, cliente.getId_cliente());
+			}
+		});
+		comboBoxClienteOS_1.setForeground(new Color(0, 0, 0));
 		comboBoxClienteOS_1.setBounds(28, 62, 317, 25);
 		painelCadastroOS.add(comboBoxClienteOS_1);
 
@@ -494,20 +555,65 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblVeiculoOS_1.setBounds(509, 26, 146, 25);
 		painelCadastroOS.add(lblVeiculoOS_1);
 
-		JComboBox comboBoxVeiculoOS_1 = new JComboBox();
+		
 		comboBoxVeiculoOS_1.setBounds(444, 62, 317, 25);
 		painelCadastroOS.add(comboBoxVeiculoOS_1);
 
 		JTabbedPane tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tabbedPane_1.setBounds(54, 128, 422, 313);
+		tabbedPane_1.setBounds(54, 128, 323, 313);
 		painelCadastroOS.add(tabbedPane_1);
 
 		JPanel painelPecas = new JPanel();
 		tabbedPane_1.addTab("Peças", null, painelPecas, null);
 		painelPecas.setLayout(null);
 
+		TextArea textAreaOS = new TextArea();
+		textAreaOS.setBounds(383, 148, 351, 293);
+		painelCadastroOS.add(textAreaOS);
+		
 		JButton btnCadastrarOS = new JButton("Cadastrar");
+		
+		btnCadastrarOS.addActionListener(new ActionListener() {
+			final double[] totalAcumulado = {0.0};
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+                    // Recuperando os valores
+                    String descricao = textFieldDescricao.getText();
+                    double valor = Double.parseDouble(textFieldValor.getText());
+                    int quantidade = Integer.parseInt(textFieldQuant.getText());
+
+                    // Calculando o subtotal e atualizando o total acumulado
+                    double subtotal = valor * quantidade;
+                    totalAcumulado[0] += subtotal;
+
+                    // Limpando o textArea para atualizar com os valores novos
+                    String textoAtual = textAreaOS.getText();
+
+                    // Adicionando os novos dados ao textArea
+                    textoAtual += "Descrição: " + descricao 
+                                + " | Valor: " + valor 
+                                + " | Quantidade: " + quantidade 
+                                + " | Subtotal: " + String.format("%.2f", subtotal) + "\n";
+
+                    // Adicionando a linha ao textArea
+                    textAreaOS.setText(textoAtual);
+
+                    // Atualizando o valor total no textFieldSubTotal
+                    textFieldSubTotal.setText(String.format("%.2f", totalAcumulado[0]));
+
+                    // Limpando os campos após adicionar
+                    textFieldDescricao.setText("");
+                    textFieldValor.setText("");
+                    textFieldQuant.setText("");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Por favor, insira valores válidos!", 
+                                                  "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+		});
+		
 		btnCadastrarOS.setBounds(162, 229, 89, 23);
 		painelPecas.add(btnCadastrarOS);
 
@@ -544,39 +650,84 @@ public class SistemaGerenciamentoController extends JFrame {
 		JPanel painelPagamento = new JPanel();
 		tabbedPane_1.addTab("Pagamento", null, painelPagamento, null);
 
-		TextArea textArea_1 = new TextArea();
-		textArea_1.setBounds(482, 148, 252, 293);
-		painelCadastroOS.add(textArea_1);
+		
 
-		JButton btnNewButton = new JButton("Criar O.S");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btnCriarOS = new JButton("Criar O.S");
+		btnCriarOS.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnNewButton.setBounds(297, 578, 221, 25);
-		painelCadastroOS.add(btnNewButton);
+		btnCriarOS.setBounds(297, 578, 221, 25);
+		painelCadastroOS.add(btnCriarOS);
 
-		JLabel lblNewLabel_1 = new JLabel("Subtotal:");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_1.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1.setBounds(486, 456, 60, 14);
-		painelCadastroOS.add(lblNewLabel_1);
+		JLabel lblTotal = new JLabel("Total:");
+		lblTotal.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTotal.setForeground(new Color(255, 255, 255));
+		lblTotal.setBounds(486, 456, 60, 14);
+		painelCadastroOS.add(lblTotal);
 
-		textField = new JTextField();
-		textField.setBounds(588, 454, 146, 20);
-		painelCadastroOS.add(textField);
-		textField.setColumns(10);
+		textFieldSubTotal = new JTextField();
+		textFieldSubTotal.setBounds(588, 454, 146, 20);
+		painelCadastroOS.add(textFieldSubTotal);
+		textFieldSubTotal.setColumns(10);
+		textFieldSubTotal.setEditable(false);
 
+		JComboBox comboBoxParcelas = new JComboBox();
+		comboBoxParcelas.addItem("1x");
+		comboBoxParcelas.addItem("2x");
+		comboBoxParcelas.addItem("3x");
+		comboBoxParcelas.addItem("4x");
+		comboBoxParcelas.addItem("5x");
+		comboBoxParcelas.addItem("6x");
+		comboBoxParcelas.addItem("7x");
+		comboBoxParcelas.addItem("8x");
+		comboBoxParcelas.addItem("9x");
+		comboBoxParcelas.addItem("10x");
+		comboBoxParcelas.addItem("11x");
+		comboBoxParcelas.addItem("12x");
+		
+		comboBoxParcelas.setBounds(588, 518, 146, 22);
+		painelCadastroOS.add(comboBoxParcelas);
+		
 		JComboBox comboBox_FormaPagamento = new JComboBox();
+		comboBox_FormaPagamento.addItemListener(new ItemListener() {
+		    @Override
+		    public void itemStateChanged(ItemEvent e) {
+		        if (comboBox_FormaPagamento.getSelectedItem().equals("Cartão de Crédito")) {
+		            comboBoxParcelas.setEnabled(true);  // Ativa a comboBox de parcelas
+		            comboBoxParcelas.addItem("1x");
+		            comboBoxParcelas.addItem("2x");
+		            comboBoxParcelas.addItem("3x");
+		            comboBoxParcelas.addItem("4x");
+		            comboBoxParcelas.addItem("5x");
+		            comboBoxParcelas.addItem("6x");
+		            comboBoxParcelas.addItem("7x");
+		            comboBoxParcelas.addItem("8x");
+		            comboBoxParcelas.addItem("9x");
+		            comboBoxParcelas.addItem("10x");
+		            comboBoxParcelas.addItem("11x");
+		            comboBoxParcelas.addItem("12x");
+		        } else {
+		            comboBoxParcelas.setEnabled(false); // Desativa a comboBox de parcelas
+		            comboBoxParcelas.removeAllItems(); // Limpa as opções de parcelas
+		            
+		        }
+		    }
+		});
+		comboBox_FormaPagamento.addItem("Dinheiro");
+        comboBox_FormaPagamento.addItem("Cartão de Crédito");
+        comboBox_FormaPagamento.addItem("Cartão de Débito");
+        comboBox_FormaPagamento.addItem("Pix");
+        
 		comboBox_FormaPagamento.setBounds(588, 485, 146, 22);
 		painelCadastroOS.add(comboBox_FormaPagamento);
 
-		JLabel lblNewLabel_2 = new JLabel("F. Pagamento:");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_2.setForeground(new Color(255, 255, 255));
-		lblNewLabel_2.setBounds(486, 489, 92, 14);
-		painelCadastroOS.add(lblNewLabel_2);
+		JLabel lblFormaPagamento = new JLabel("F. Pagamento:");
+		lblFormaPagamento.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblFormaPagamento.setForeground(new Color(255, 255, 255));
+		lblFormaPagamento.setBounds(486, 489, 92, 14);
+		painelCadastroOS.add(lblFormaPagamento);
 
 		JLabel lblParcelas = new JLabel("Parcelas: ");
 		lblParcelas.setForeground(Color.WHITE);
@@ -584,9 +735,7 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblParcelas.setBounds(486, 517, 102, 14);
 		painelCadastroOS.add(lblParcelas);
 
-		JComboBox comboBox_FormaPagamento_1 = new JComboBox();
-		comboBox_FormaPagamento_1.setBounds(588, 518, 146, 22);
-		painelCadastroOS.add(comboBox_FormaPagamento_1);
+		
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 0));
