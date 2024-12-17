@@ -9,14 +9,11 @@ import java.awt.Image;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-<<<<<<< HEAD
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-=======
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
->>>>>>> dfa61e12b027391f78a449f6586131f77b8bf8c8
+
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -360,14 +357,12 @@ public class SistemaGerenciamentoController extends JFrame {
 
 				Modelo modelo = (Modelo) comboBoxModelo_CadastroVeiculo.getSelectedItem();
 
-				Veiculo veiculo = vDAO.inserirVeiculo(textField_Placa_CadastroVeiculo.getText(),
-<<<<<<< HEAD
-						textField_Motor_CadastroVeiculo.getText(), cliente.getId_cliente(), modelo.getId_modelo());
-=======
-						textField_Motor_CadastroVeiculo.getText(), cliente.getId_cliente(), modelo.getId_modelo(),
+				Veiculo veiculo = vDAO.inserirVeiculo(
+						textField_Placa_CadastroVeiculo.getText(),
+						textField_Motor_CadastroVeiculo.getText(), 
+						cliente.getId_cliente(), 
+						modelo.getId_modelo(),
 						textField_Ano_CadastroVeiculo.getText());
->>>>>>> dfa61e12b027391f78a449f6586131f77b8bf8c8
-
 				resetarCampos(painelCadastrarVeiculo);
 			}
 		});
@@ -467,12 +462,8 @@ public class SistemaGerenciamentoController extends JFrame {
 				modeloTabela.setRowCount(0);
 
 				for (Veiculo veiculo : veiculos) {
-<<<<<<< HEAD
-					modeloTabela.addRow(new Object[] { veiculo.getId_modelo(), veiculo.getAno(), veiculo.getMotor(), veiculo.getPlaca()});
-=======
 					modeloTabela.addRow(new Object[] { veiculo.getId_modelo(), veiculo.getAno(), veiculo.getMotor(),
 							veiculo.getPlaca() });
->>>>>>> dfa61e12b027391f78a449f6586131f77b8bf8c8
 				}
 
 			}
@@ -510,16 +501,10 @@ public class SistemaGerenciamentoController extends JFrame {
 		modeloTabela.addColumn("Ano");
 		modeloTabela.addColumn("Motor");
 		modeloTabela.addColumn("placa");
-<<<<<<< HEAD
-		
-		tableVeiculos.setModel(new DefaultTableModel(new Object[][] {},
-                new String[] { "Modelo", "Ano", "Motor", "placa" }));
-		
-=======
 
 		tableVeiculos.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Modelo", "Ano", "Motor", "placa" }));
 
->>>>>>> dfa61e12b027391f78a449f6586131f77b8bf8c8
+
 		scrollPane.setViewportView(tableVeiculos);
 
 		ImageIcon iconDelete = new ImageIcon("img/delete.png");
@@ -617,16 +602,11 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelCadastroOS.add(lblClienteOS_1);
 
 		JComboBox<String> comboBoxVeiculoOS_1 = new JComboBox();
-<<<<<<< HEAD
+
 		
 		JComboBox<Cliente> comboBoxClienteOS_1 = new JComboBox();
 		ClienteDAO.carregarComboBoxCliente(comboBoxClienteOS_1);
-		comboBoxClienteOS_1.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-=======
+		
 
 		JComboBox<Cliente> comboBoxClienteOS_1 = new JComboBox();
 		ClienteDAO.carregarComboBoxCliente(comboBoxClienteOS_1);
@@ -634,8 +614,7 @@ public class SistemaGerenciamentoController extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
->>>>>>> dfa61e12b027391f78a449f6586131f77b8bf8c8
+				
 				Cliente cliente = (Cliente) comboBoxClienteOS_1.getSelectedItem();
 				VeiculoDAO.carregarNomesVeiculo(comboBoxVeiculoOS_1, cliente.getId_cliente());
 			}
@@ -650,10 +629,6 @@ public class SistemaGerenciamentoController extends JFrame {
 		lblVeiculoOS_1.setBounds(509, 26, 146, 25);
 		painelCadastroOS.add(lblVeiculoOS_1);
 
-<<<<<<< HEAD
-		
-=======
->>>>>>> dfa61e12b027391f78a449f6586131f77b8bf8c8
 		comboBoxVeiculoOS_1.setBounds(444, 62, 317, 25);
 		painelCadastroOS.add(comboBoxVeiculoOS_1);
 
@@ -821,19 +796,11 @@ public class SistemaGerenciamentoController extends JFrame {
 		comboBox_FormaPagamento.setBounds(588, 485, 146, 22);
 		painelCadastroOS.add(comboBox_FormaPagamento);
 
-<<<<<<< HEAD
-		JLabel lblFormaPagamento = new JLabel("F. Pagamento:");
-		lblFormaPagamento.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblFormaPagamento.setForeground(new Color(255, 255, 255));
-		lblFormaPagamento.setBounds(486, 489, 92, 14);
-		painelCadastroOS.add(lblFormaPagamento);
-=======
 		JLabel lblNewLabel_2 = new JLabel("Pagamento:");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblNewLabel_2.setForeground(new Color(255, 255, 255));
 		lblNewLabel_2.setBounds(486, 489, 92, 14);
 		painelCadastroOS.add(lblNewLabel_2);
->>>>>>> dfa61e12b027391f78a449f6586131f77b8bf8c8
 
 		JLabel lblParcelas = new JLabel("Parcelas: ");
 		lblParcelas.setForeground(Color.WHITE);
@@ -842,7 +809,6 @@ public class SistemaGerenciamentoController extends JFrame {
 		painelCadastroOS.add(lblParcelas);
 
 		
-
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 0));
 
