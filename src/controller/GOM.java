@@ -57,7 +57,6 @@ public class GOM extends JFrame{
 	private JTextField textField_emial_consulta;
 	private JTextField textField_telefone_consulta;
 	private JTable tableVeiculosCliente;
-	private JTable tableDevedores;
 	private JComboBox comboBoxSelecCliente;
 	private JTextField textField_Motor;
 
@@ -566,29 +565,6 @@ public class GOM extends JFrame{
 		label_excluirCliente.setVisible(false);
 		painelConsultaCliente.add(label_excluirCliente);
 
-		JPanel painelDevedores = new JPanel();
-		painelDevedores.setBackground(new Color(0, 0, 0));
-		painelDevedores.setLayout(null);
-		painelPrincipal.add(painelDevedores, "PAINEL DEVEDORES");
-
-		tableDevedores = new JTable();
-		tableDevedores.setBounds(95, 102, 587, 326);
-		painelDevedores.add(tableDevedores);
-
-		JLabel lblDevedores = new JLabel("Lista de Devedores");
-		lblDevedores.setForeground(new Color(255, 255, 255));
-		lblDevedores.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblDevedores.setBounds(294, 52, 198, 25);
-		painelDevedores.add(lblDevedores);
-
-		JButton btnNovaDivida = new JButton("Nova Dívida");
-		btnNovaDivida.setForeground(new Color(255, 255, 255));
-		btnNovaDivida.setBorder(new LineBorder(new Color(255, 255, 255)));
-		btnNovaDivida.setBackground(new Color(0, 0, 0));
-		btnNovaDivida.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnNovaDivida.setBounds(95, 52, 157, 25);
-		painelDevedores.add(btnNovaDivida);
-
 		JPanel painelCadastroOS = new JPanel();
 		painelCadastroOS.setBackground(new Color(0, 0, 0));
 		painelCadastroOS.setLayout(null);
@@ -885,36 +861,8 @@ public class GOM extends JFrame{
 		JMenuItem menuItemConsultarCliente = new JMenuItem("Consultar Cliente");
 		menuItemConsultarCliente.setForeground(new Color(255, 255, 255));
 		menuItemConsultarCliente.setBackground(new Color(0, 0, 0));
-		menuItemConsultarCliente.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CardLayout cl = (CardLayout) painelPrincipal.getLayout();
-				cl.show(painelPrincipal, "PAINEL CONSULTA CLIENTE");
-				resetarCampos(painelDevedores);
-
-			}
-		});
+	
 		menuConsulta.add(menuItemConsultarCliente);
-
-		JMenu menuDevedores = new JMenu("Devedores");
-		menuDevedores.setForeground(new Color(255, 255, 255));
-
-		menuBar.add(menuDevedores);
-
-		JMenuItem menuItemDevedores = new JMenuItem("Lista de Devedores");
-		menuItemDevedores.setForeground(new Color(255, 255, 255));
-		menuItemDevedores.setBackground(new Color(0, 0, 0));
-		menuItemDevedores.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CardLayout cl = (CardLayout) painelPrincipal.getLayout();
-				cl.show(painelPrincipal, "PAINEL DEVEDORES");
-
-			}
-		});
-		menuDevedores.add(menuItemDevedores);
 
 		setSize(800, 723);
 		setLocationRelativeTo(null);
