@@ -1,5 +1,6 @@
 package model.DAO;
 
+import java.awt.print.Book;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,11 +61,12 @@ public class ClienteDAO {
 
 		Conexao conexao = Conexao.Conectar();
 		Connection con = conexao.obterConexao();
-		String sql = "select * from cliente order by nomeCompleto_cliente";
+		String sql = "select * from cliente";
 
 		try {
-			PreparedStatement comando = con.prepareStatement(sql);
-			ResultSet rs = comando.executeQuery();
+			//PreparedStatement comando = con.prepareStatement(sql);
+			Statement comando = con.createStatement();
+			ResultSet rs = comando.executeQuery(sql);
 
 			while (rs.next()) {
 				Cliente cliente = new Cliente();
@@ -123,6 +125,31 @@ public class ClienteDAO {
 
 		return cliente;
 	}
+	
+	public static boolean deletarCliente (int idCliente) {
+		boolean ok = false;
+		Conexao conexao = Conexao.Conectar();
+		Connection con = conexao.obterConexao();
+		
+		String sql = "delete from cliente where id_cliente=?";
+		try {
+			PreparedStatement comando = con.prepareStatement(sql);
+			comando.setInt(1, idCliente);
+			
+			ok = comando.executeUpdate() > 0;
+			
+			comando.close();
+			con.close();
+			
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao excluir no Banco de Dados.");
+//			System.out.println("Erro ao excluir no Banco de Dados.");
+//			System.out.println("Verifique sua instrução SQL.");
+//			System.out.println("Mensagem de erro: "+e.getMessage());
+//			e.printStackTrace();
+		}
+		return ok;
+	}
 
 	public static boolean atualizar(int id, String nome, String endereco, String cpf, String email, String telefone) {
 	    boolean ok = false;
@@ -145,5 +172,28 @@ public class ClienteDAO {
 	        e.printStackTrace();
 	    }
 	    return ok;
+	}
+	
+	public static boolean existsByCPF(String cpf) {
+		Conexao conexao = Conexao.Conectar();
+		Connection con = conexao.obterConexao();
+
+		String sql = "SELECT COUNT(*) FROM cliente WHERE cpf_cliente = ?";
+
+		try (
+			PreparedStatement stmt = con.prepareStatement(sql)) {
+
+			stmt.setString(1, cpf); // Define o valor da placa no PreparedStatement
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt(1) > 0; // Se o número de registros encontrados for maior que 0, já existe uma pessoa
+											// com esse cpf
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false; // Retorna false caso ocorra algum erro ou se não encontrar a placa
 	}
 }
