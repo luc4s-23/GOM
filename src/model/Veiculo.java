@@ -78,7 +78,7 @@ public class Veiculo {
 
 	@Override
 	public String toString() {
-		return "placa: " + placa + ", motor: " + motor;
+		return "Placa: " + placa + ", Motor: " + motor + ", Ano: " + ano;
 	}
 
 }

@@ -56,4 +56,9 @@ public class Conexao {
 		return senha;
 	}
 
+	public static Connection getConnection() {
+		Configurador cf = new Configurador();
+		return (Connection) new Conexao(cf.getUrl(), cf.getDriver(), cf.getLogin(), cf.getSenha());
+	}
+
 }
